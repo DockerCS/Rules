@@ -219,36 +219,6 @@ DOMAIN,cs428.wpc.edgecastcdn.net
 DOMAIN,cws-hulu.conviva.com
 DOMAIN,hulu.com.c.footprint.net
 DOMAIN,hulu.map.fastly.net
-# > iQIYI Intl
-USER-AGENT,iQIYI*
-USER-AGENT,QIYIVideo*
-USER-AGENT,QYPlayer*
-USER-AGENT,QTP*
-PROCESS-NAME,com.iqiyi.i18n
-PROCESS-NAME,com.iqiyi.i18n.tv
-DOMAIN-SUFFIX,inter.iqiyi.com
-DOMAIN-SUFFIX,iq.com
-// 首页
-DOMAIN-SUFFIX,intl.iqiyi.com
-// 历史
-DOMAIN,intl-rcd.iqiyi.com
-// 收藏
-DOMAIN,intl-subscription.iqiyi.com
-// 播放
-IP-CIDR,104.85.165.17/32,no-resolve
-IP-CIDR,110.238.107.47/32,no-resolve
-IP-CIDR,118.26.32.162/32,no-resolve
-IP-CIDR,159.138.102.146/32,no-resolve
-IP-CIDR,184.51.102.0/24,no-resolve
-IP-CIDR,203.74.95.130/28,no-resolve
-IP-CIDR,203.80.97.203/32,no-resolve
-IP-CIDR,210.71.227.202/32,no-resolve
-IP-CIDR,23.200.145.146/32,no-resolve
-IP-CIDR,23.210.215.186/32,no-resolve
-IP-CIDR,23.211.15.0/24,no-resolve
-IP-CIDR,23.219.172.0/24,no-resolve
-IP-CIDR,23.40.242.10/32,no-resolve
-IP-CIDR,23.59.252.0/24,no-resolve
 # > Japonx
 DOMAIN-KEYWORD,japonx
 DOMAIN-KEYWORD,japronx
@@ -279,9 +249,6 @@ USER-AGENT,LINE*
 DOMAIN-SUFFIX,d3c7rimkq79yfu.cloudfront.net
 DOMAIN-SUFFIX,linetv.tw
 DOMAIN-SUFFIX,profile.line-scdn.net
-# > MOO
-USER-AGENT,MOO*
-USER-AGENT,TencentMidasConnect*
 # > myTV_SUPER
 USER-AGENT,mytv*
 DOMAIN-KEYWORD,nowtv100
@@ -352,10 +319,6 @@ DOMAIN-SUFFIX,nowe.com
 DOMAIN-SUFFIX,viu.com
 DOMAIN-SUFFIX,viu.tv
 DOMAIN-SUFFIX,viu.now.com
-# > WeTV
-USER-AGENT,WeTV*
-DOMAIN-SUFFIX,wetv.vip
-DOMAIN-SUFFIX,wetvinfo.com
 # > Youtube Music
 USER-AGENT,*YouTubeMusic*
 USER-AGENT,*com.google.ios.youtubemusic*

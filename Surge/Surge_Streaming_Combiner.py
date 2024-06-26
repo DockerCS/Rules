@@ -4,7 +4,7 @@ import os
 folder_path = 'D:/OneDrive/#007 MyTools/Network Proxy/Profiles/Rules/Surge/Provider/Media'
 
 # 特定要合并的文件列表
-special_files = {'Bilibili.list', 'IQIYI.list', 'Youku.list', 'Tencent Video.list', 'Letv.list', 'Netease Music.list'}
+special_files = {'Bilibili.list', 'IQ.list', 'IQIYI.list', 'Youku.list', 'Tencent Video.list', 'WeTV.list', 'MOO.list', 'Letv.list', 'Netease Music.list'}
 
 # 输出文件的名称
 special_output_file = os.path.join(folder_path, 'StreamingCN.list')

@@ -1,10 +1,10 @@
 import os
 
 # 设定文件夹路径
-folder_path = r'D:\OneDrive\#007 MyTools\Network Proxy\Profiles\Rules\Clash\Provider\Media'
+folder_path = 'D:/OneDrive/#007 MyTools/Network Proxy/Profiles/Rules/Clash/Provider/Media'
 
 # 特定要合并的文件列表
-special_files = {'Bilibili.yaml', 'IQIYI.yaml', 'Youku.yaml', 'Tencent Video.yaml', 'Letv.yaml', 'Netease Music.yaml'}
+special_files = {'Bilibili.yaml', 'IQ.yaml', 'IQIYI.yaml', 'Youku.yaml', 'Tencent Video.yaml', 'WeTV.yaml', 'MOO.yaml', 'Letv.yaml', 'Netease Music.yaml'}
 
 # 输出文件的名称
 special_output_file = os.path.join(folder_path, 'StreamingCN.yaml')
