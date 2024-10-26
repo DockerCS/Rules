@@ -25,6 +25,7 @@ DOMAIN-SUFFIX,copilot.microsoft.com
 
 # > Gemini
 DOMAIN-SUFFIX,gemini.google.com
+DOMAIN-SUFFIX,generativelanguage.googleapis.com
 DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com
 
 # > Meta AI
@@ -32,3 +33,7 @@ DOMAIN-SUFFIX,meta.ai
 
 # > Perplexity AI
 DOMAIN-SUFFIX,perplexity.ai
+
+# > Siri
+DOMAIN-SUFFIX,apple-relay.apple.com
+DOMAIN,guzzoni.smoot.apple.com
