@@ -1,7 +1,7 @@
 import os
 
 # 设定文件夹路径
-media_folder_path = 'D:/OneDrive/#007 MyTools/Network Proxy/Profiles/Rules/Surge/Provider/Media'
+media_folder_path = '/Users/dockercs/Library/CloudStorage/OneDrive-个人/#007 MyTools/Network Proxy/Profiles/Rules/Surge/Provider/Media'
 
 # 输出文件的名称
 streamingCN_output_file = os.path.join(media_folder_path, 'StreamingCN.list')
