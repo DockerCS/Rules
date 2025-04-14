@@ -178,7 +178,6 @@ payload:
   - DOMAIN-SUFFIX,ngtv.io
   - DOMAIN-SUFFIX,pypestream.com
   - DOMAIN-SUFFIX,warnermediacdn.com
-  # - USER-AGENT,*Max*
 
   # > Analysis
   - DOMAIN,app-analytics-services.com
@@ -380,6 +379,7 @@ payload:
   - DOMAIN-SUFFIX,gamer.com.tw
   - DOMAIN,gamer-cds.cdn.hinet.net
   - DOMAIN,gamer2-cds.cdn.hinet.net
+  - DOMAIN,bahamut.akamaized.net
 
   # > Apple TV
   - DOMAIN,np-edge.itunes.apple.com
