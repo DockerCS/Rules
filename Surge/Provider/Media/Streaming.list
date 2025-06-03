@@ -122,6 +122,7 @@ DOMAIN-SUFFIX,kfs.io
 
 # > AbemaTV
 USER-AGENT,AbemaTV*
+DOMAIN-SUFFIX,abema-tv.com
 DOMAIN-SUFFIX,abema.io
 DOMAIN-SUFFIX,abema.tv
 DOMAIN-SUFFIX,ameba.jp
