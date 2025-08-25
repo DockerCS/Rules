@@ -68,11 +68,18 @@ payload:
   # - USER-AGENT,AbemaTV*
   - PROCESS-NAME,tv.abema
   - DOMAIN-SUFFIX,abema-tv.com
+  - DOMAIN-SUFFIX,abema.adx.promo
   - DOMAIN-SUFFIX,abema.io
   - DOMAIN-SUFFIX,abema.tv
   - DOMAIN-SUFFIX,ameba.jp
+  - DOMAIN-SUFFIX,bucketeer.jp
+  - DOMAIN-SUFFIX,ds-linear-abematv.akamaized.net
+  - DOMAIN-SUFFIX,ds-vod-abematv.akamaized.net
   - DOMAIN-SUFFIX,hayabusa.io
-  - DOMAIN-KEYWORD,abematv.akamaized.net
+  - DOMAIN-SUFFIX,hayabusa.media
+  - DOMAIN-SUFFIX,linear-abematv.akamaized.net
+  - DOMAIN-SUFFIX,vod-abematv.akamaized.net
+  - DOMAIN-SUFFIX,vod-playout-abematv.akamaized.net
 
   # > Fox Now
   # - USER-AGENT,FOX%20NOW*
@@ -147,13 +154,13 @@ payload:
   - DOMAIN-SUFFIX,blobstore.apple.com
 
   # > DMM
-  - DOMAIN-SUFFIX,dmm.com
-  - DOMAIN-SUFFIX,dmm.co.jp
-  - DOMAIN-SUFFIX,dmmgames.com
-  - DOMAIN-SUFFIX,dmm.hk
   - DOMAIN-SUFFIX,dmm-extension.com
-  - DOMAIN,d129a39a862w9z.cloudfront.net
-  - DOMAIN,d2ezz24t9nm0vu.cloudfront.net
+  - DOMAIN-SUFFIX,dmm.co.jp
+  - DOMAIN-SUFFIX,dmm.com
+  - DOMAIN-SUFFIX,img.vm-movie.jp
+  - DOMAIN-SUFFIX,p-smith.com
+  - DOMAIN-SUFFIX,videomarket.jp
+  - DOMAIN-SUFFIX,vmdash-cenc.akamaized.net
 
   # > Max
   - DOMAIN-SUFFIX,max.com
@@ -417,19 +424,13 @@ payload:
   - DOMAIN-SUFFIX,formula1.com
 
   # > Netflix
-  - DOMAIN-SUFFIX,fast.com
-  - DOMAIN-SUFFIX,netflix.ca
   - DOMAIN-SUFFIX,netflix.com
   - DOMAIN-SUFFIX,netflix.net
-  - DOMAIN-SUFFIX,netflixinvestor.com
-  - DOMAIN-SUFFIX,netflixtechblog.com
   - DOMAIN-SUFFIX,nflxext.com
   - DOMAIN-SUFFIX,nflximg.com
   - DOMAIN-SUFFIX,nflximg.net
-  - DOMAIN-SUFFIX,nflxsearch.net
   - DOMAIN-SUFFIX,nflxso.net
   - DOMAIN-SUFFIX,nflxvideo.net
-  - DOMAIN-SUFFIX,netflix.com.edgesuite.net
 
   # > Japonx
   - DOMAIN-KEYWORD,japonx
@@ -504,13 +505,14 @@ payload:
   # > Disney Plus
   # - USER-AGENT,Disney*
   - PROCESS-NAME,com.disney.disneyplus
-  - DOMAIN-SUFFIX,bamgrid.com,PROXY
-  - DOMAIN-SUFFIX,cdn.registerdisney.go.com,PROXY
-  - DOMAIN-SUFFIX,disney-plus.net,PROXY
-  - DOMAIN-SUFFIX,disneyplus.com,PROXY
-  - DOMAIN-SUFFIX,disneynow.com,PROXY
-  - DOMAIN-SUFFIX,disneystreaming.com,PROXY
-  - DOMAIN-SUFFIX,dssott.com,PROXY
+  - DOMAIN-SUFFIX,cdn.registerdisney.go.com
+  - DOMAIN-SUFFIX,disney-plus.net
+  - DOMAIN-SUFFIX,disney.api.edge.bamgrid.com
+  - DOMAIN-SUFFIX,disney.connections.edge.bamgrid.com
+  - DOMAIN-SUFFIX,disneynow.com
+  - DOMAIN-SUFFIX,disneyplus.com
+  - DOMAIN-SUFFIX,disneystreaming.com
+  - DOMAIN-SUFFIX,dssott.com
 
   # > Niconico
   - DOMAIN-SUFFIX,dmc.nico
