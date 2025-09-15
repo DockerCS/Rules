@@ -15,34 +15,13 @@ USER-AGENT,bili-inter*
 DOMAIN,apiintl.biliapi.net
 
 # > Youku
+DOMAIN-SUFFIX,soku.com
 DOMAIN-SUFFIX,youku.com
-IP-CIDR,106.11.0.0/16,no-resolve
+DOMAIN-SUFFIX,ykimg.com
 
 # > Netease Music
-DOMAIN,apm.music.163.com
-DOMAIN,apm3.music.163.com
-DOMAIN,interface.music.163.com
-DOMAIN,interface3.music.163.com
-DOMAIN,music.163.com
-IP-CIDR,101.71.154.241/32,no-resolve
-IP-CIDR,103.126.92.132/32,no-resolve
-IP-CIDR,103.126.92.133/32,no-resolve
-IP-CIDR,112.13.119.17/32,no-resolve
-IP-CIDR,112.13.122.1/32,no-resolve
-IP-CIDR,115.236.118.33/32,no-resolve
-IP-CIDR,115.236.121.1/32,no-resolve
-IP-CIDR,118.24.63.156/32,no-resolve
-IP-CIDR,193.112.159.225/32,no-resolve
-IP-CIDR,223.252.199.66/32,no-resolve
-IP-CIDR,223.252.199.67/32,no-resolve
-IP-CIDR,39.105.63.80/32,no-resolve
-IP-CIDR,45.254.48.1/32,no-resolve
-IP-CIDR,47.100.127.239/32,no-resolve
-IP-CIDR,59.111.160.195/32,no-resolve
-IP-CIDR,59.111.160.197/32,no-resolve
-IP-CIDR,59.111.181.35/32,no-resolve
-IP-CIDR,59.111.181.38/32,no-resolve
-IP-CIDR,59.111.181.60/32,no-resolve
+DOMAIN-SUFFIX,music.163.com
+DOMAIN-SUFFIX,music.126.net
 
 # > letv
 DOMAIN-SUFFIX,api.mob.app.letv.com
@@ -64,13 +43,40 @@ DOMAIN-SUFFIX,wetvinfo.com
 USER-AGENT,*QIYI*
 USER-AGENT,iQiYi*
 DOMAIN-SUFFIX,iqiyi.com
-DOMAIN-SUFFIX,iqiyipic.com
-DOMAIN-SUFFIX,iq.com
-DOMAIN-SUFFIX,qy.net
-DOMAIN-SUFFIX,gitv.tv
 DOMAIN-SUFFIX,71.am
-DOMAIN-KEYWORD,qiyi
-DOMAIN,cache.video.iqiyi.com
+DOMAIN-SUFFIX,71.am.com
+DOMAIN-SUFFIX,71edge.com
+DOMAIN-SUFFIX,71edge.net
+DOMAIN-SUFFIX,aianno.cn
+DOMAIN-SUFFIX,aianno.com
+DOMAIN-SUFFIX,aiqiyicloud-mgmt.com
+DOMAIN-SUFFIX,aiqiyicloud.com
+DOMAIN-SUFFIX,aiqiyicloud.net
+DOMAIN-SUFFIX,baiying.com
+DOMAIN-SUFFIX,gitv.cn
+DOMAIN-SUFFIX,gitv.tv
+DOMAIN-SUFFIX,ibkstore.com
+DOMAIN-SUFFIX,iq.com
+DOMAIN-SUFFIX,iqiyi.com
+DOMAIN-SUFFIX,iqiyi.demo.uwp
+DOMAIN-SUFFIX,iqiyiedge.com
+DOMAIN-SUFFIX,iqiyiedge.net
+DOMAIN-SUFFIX,iqiyipic.com
+DOMAIN-SUFFIX,jiangbing.cn
+DOMAIN-SUFFIX,pps.tv
+DOMAIN-SUFFIX,ppsimg.com
+DOMAIN-SUFFIX,ppstream.cn
+DOMAIN-SUFFIX,ppstream.com
+DOMAIN-SUFFIX,ppstream.com.cn
+DOMAIN-SUFFIX,ppstream.net
+DOMAIN-SUFFIX,ppstream.net.cn
+DOMAIN-SUFFIX,ppsurl.com
+DOMAIN-SUFFIX,qiyi.cn
+DOMAIN-SUFFIX,qiyi.com
+DOMAIN-SUFFIX,qiyipic.com
+DOMAIN-SUFFIX,qy.com
+DOMAIN-SUFFIX,qy.net
+DOMAIN-SUFFIX,suike.cn
 
 # > iQIYI Intl
 USER-AGENT,iQIYI*

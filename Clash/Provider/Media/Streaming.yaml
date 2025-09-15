@@ -48,7 +48,6 @@ payload:
   - DOMAIN-SUFFIX,uplynk.com
 
   # > TikTok
-  - DOMAIN,p16-tiktokcdn-com.akamaized.net
   - DOMAIN-SUFFIX,byteoversea.com
   - DOMAIN-SUFFIX,ibytedtos.com
   - DOMAIN-SUFFIX,ibyteimg.com
@@ -61,7 +60,6 @@ payload:
   - DOMAIN-SUFFIX,tiktok.com
   - DOMAIN-SUFFIX,tiktokcdn.com
   - DOMAIN-SUFFIX,tiktokv.com
-  - DOMAIN-KEYWORD,-tiktokcdn-com
 #  - USER-AGENT,TikTok*
 
   # > AbemaTV
