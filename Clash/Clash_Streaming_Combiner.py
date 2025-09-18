@@ -9,7 +9,7 @@ streaming_output_file = os.path.join(media_folder_path, 'Streaming.yaml')
 
 # 特定要合并的文件列表
 all_files = os.listdir(media_folder_path)
-streamingCN_files = {'Bilibili.yaml', 'Douyin.yaml', 'IQ.yaml', 'IQIYI.yaml', 'Youku.yaml', 'Tencent Video.yaml', 'WeTV.yaml', 'MOO.yaml', 'Letv.yaml', 'Netease Music.yaml'}
+streamingCN_files = {'Emby.yaml', 'Bilibili.yaml', 'Douyin.yaml', 'IQ.yaml', 'IQIYI.yaml', 'Youku.yaml', 'Tencent Video.yaml', 'WeTV.yaml', 'MOO.yaml', 'Letv.yaml', 'Netease Music.yaml'}
 streaming_files = list(set(all_files) - set(streamingCN_files) - set(['StreamingCN.yaml', 'Streaming.yaml']))
 
 print(all_files, streamingCN_files, streaming_files)

@@ -9,7 +9,7 @@ streaming_output_file = os.path.join(media_folder_path, 'Streaming.list')
 
 # 特定要合并的文件列表
 all_files = os.listdir(media_folder_path)
-streamingCN_files = {'Bilibili.list', 'Douyin.list', 'IQ.list', 'IQIYI.list', 'Youku.list', 'Tencent Video.list', 'WeTV.list', 'MOO.list', 'Letv.list', 'Netease Music.list'}
+streamingCN_files = {'Emby.list', 'Bilibili.list', 'Douyin.list', 'IQ.list', 'IQIYI.list', 'Youku.list', 'Tencent Video.list', 'WeTV.list', 'MOO.list', 'Letv.list', 'Netease Music.list'}
 streaming_files = list(set(all_files) - set(streamingCN_files) - set(['StreamingCN.list', 'Streaming.list']))
 
 print(all_files, streamingCN_files, streaming_files)
