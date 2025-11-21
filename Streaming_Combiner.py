@@ -1,0 +1,220 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import argparse
+from pathlib import Path
+from typing import Set
+
+# 脚本所在目录 = Rules 根目录
+BASE_DIR = Path(__file__).resolve().parent
+
+# Clash 侧要归入 StreamingCN.yaml 的文件
+CLASH_STREAMING_CN_FILES: Set[str] = {
+    "Bilibili.yaml",
+    "Douyin.yaml",
+    "Emby.yaml",
+    "IQ.yaml",
+    "IQIYI.yaml",
+    "Letv.yaml",
+    "MOO.yaml",
+    "Netease Music.yaml",
+    "Tencent Video.yaml",
+    "WeTV.yaml",
+    "Youku.yaml",
+}
+
+# Surge 侧要归入 StreamingCN.list 的文件
+SURGE_STREAMING_CN_FILES: Set[str] = {
+    "Bilibili.list",
+    "Douyin.list",
+    "Emby.list",
+    "IQ.list",
+    "IQIYI.list",
+    "Letv.list",
+    "MOO.list",
+    "Netease Music.list",
+    "Tencent Video.list",
+    "WeTV.list",
+    "Youku.list",
+}
+
+
+def find_media_folder(vendor: str) -> Path:
+    """
+    查找 Clash/Surge 的 Provider 目录：
+    优先使用 Rules/{vendor}/Provider/Media
+    找不到则使用 Rules/{vendor}/Provider
+    """
+    candidates = [
+        BASE_DIR / vendor / "Provider" / "Media",
+        BASE_DIR / vendor / "Provider",
+    ]
+    for path in candidates:
+        if path.is_dir():
+            return path
+
+    # 都不存在就报错
+    raise FileNotFoundError(
+        f"[{vendor}] 找不到 Provider 目录，请检查目录结构是否为：\n"
+        f"  Rules/{vendor}/Provider/Media 或 Rules/{vendor}/Provider"
+    )
+
+
+def _append_blank_line(block: list[str]) -> list[str]:
+    """确保每个文件块末尾至少有一个空行。"""
+    if not block:
+        return block
+    if not block[-1].endswith("\n"):
+        block[-1] = block[-1] + "\n"
+    block.append("\n")
+    return block
+
+
+def _pretty_print_file_list(title: str, items: list[str]) -> None:
+    """美化打印文件列表。"""
+    if not items:
+        print(f"  • {title}：无匹配文件")
+        return
+    print(f"  • {title}（{len(items)} 个）：")
+    for name in items:
+        print(f"     - {name}")
+
+
+def combine_streaming(
+    vendor: str,
+    extension: str,
+    cn_file_set: Set[str],
+    out_cn_name: str,
+    out_all_name: str,
+    is_clash_yaml: bool = False,
+) -> None:
+    """
+    通用合并函数：
+    - vendor: "Clash" 或 "Surge"
+    - extension: ".yaml" 或 ".list"
+    - cn_file_set: 需要归入 StreamingCN 的文件名集合
+    - out_cn_name: 输出的国内流媒体文件名
+    - out_all_name: 输出的国际/其他流媒体文件名
+    - is_clash_yaml: 是否为 Clash YAML（需要写 payload: 头，并去除子文件第一行 payload）
+    """
+    print(f"\n==================== 🧩 {vendor} 合并开始 ====================")
+    media_folder = find_media_folder(vendor)
+    print(f"📁 规则目录：{media_folder}")
+
+    # 列出所有指定后缀的文件，排除输出文件自身
+    files = sorted(
+        f
+        for f in media_folder.iterdir()
+        if f.is_file()
+        and f.suffix == extension
+        and f.name not in {out_cn_name, out_all_name}
+    )
+
+    if not files:
+        print(f"⚠️ 未找到任何 *{extension} 文件，跳过 {vendor}。")
+        return
+
+    cn_files = sorted({f.name for f in files if f.name in cn_file_set})
+    other_files = [f for f in files if f.name not in cn_file_set]
+
+    out_cn_path = media_folder / out_cn_name
+    out_all_path = media_folder / out_all_name
+
+    _pretty_print_file_list(f"{out_cn_name}（大陆流媒体）", cn_files)
+    _pretty_print_file_list(
+        f"{out_all_name}（其它 / 国际流媒体）",
+        [f.name for f in other_files],
+    )
+
+    with out_cn_path.open("w", encoding="utf-8") as cn_out, \
+            out_all_path.open("w", encoding="utf-8") as all_out:
+
+        # Clash 的 YAML 输出文件写入 payload: 头
+        if is_clash_yaml:
+            cn_out.write("payload:\n")
+            all_out.write("payload:\n")
+
+        for f in files:
+            text = f.read_text(encoding="utf-8")
+            if not text:
+                continue
+
+            lines = text.splitlines(keepends=True)
+
+            # Clash YAML：如果首行是 payload 或 payload:，就去掉
+            if is_clash_yaml and len(lines) > 0:
+                first = lines[0].lstrip().lower()
+                if first.startswith("payload"):
+                    lines = lines[1:]
+
+            if not lines:
+                continue
+
+            lines = _append_blank_line(lines)
+
+            if f.name in cn_files:
+                cn_out.writelines(lines)
+            else:
+                all_out.writelines(lines)
+
+    print("✅ 合并完成：")
+    print(f"   - 输出（大陆流媒体）：{out_cn_path}")
+    print(f"   - 输出（其它 / 国际）：{out_all_path}")
+    print("=============================================================")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="合并 Clash / Surge 流媒体规则（支持 mac / Windows，相对路径）"
+    )
+    parser.add_argument(
+        "target",
+        nargs="?",
+        default="all",
+        choices=["all", "clash", "surge"],
+        help="要合并的目标：all（默认）、clash、surge",
+    )
+    args = parser.parse_args()
+
+    print("✨ Streaming Rules Combiner")
+    print(f"📂 根目录：{BASE_DIR}")
+    print(f"🎯 合并目标：{args.target}\n")
+
+    had_error = False
+
+    if args.target in ("all", "clash"):
+        try:
+            combine_streaming(
+                vendor="Clash",
+                extension=".yaml",
+                cn_file_set=CLASH_STREAMING_CN_FILES,
+                out_cn_name="StreamingCN.yaml",
+                out_all_name="Streaming.yaml",
+                is_clash_yaml=True,
+            )
+        except FileNotFoundError as e:
+            had_error = True
+            print(f"\n❌ Clash 合并失败：{e}")
+
+    if args.target in ("all", "surge"):
+        try:
+            combine_streaming(
+                vendor="Surge",
+                extension=".list",
+                cn_file_set=SURGE_STREAMING_CN_FILES,
+                out_cn_name="StreamingCN.list",
+                out_all_name="Streaming.list",
+                is_clash_yaml=False,
+            )
+        except FileNotFoundError as e:
+            had_error = True
+            print(f"\n❌ Surge 合并失败：{e}")
+
+    if not had_error:
+        print("\n🎉 全部处理完成，一切正常 ✅")
+    else:
+        print("\n⚠️ 处理结束（部分目标失败），请根据上方报错信息检查目录结构或文件。")
+
+
+if __name__ == "__main__":
+    main()

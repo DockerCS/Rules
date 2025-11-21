@@ -1,15 +1,24 @@
 payload:
-  # > JOOX
-  - PROCESS-NAME,com.tencent.ibg.joox
-  - PROCESS-NAME,com.tencent.ibg.jooxtv
-  - DOMAIN-SUFFIX,joox.com
-  - DOMAIN-KEYWORD,jooxweb-api
+  # > ABC
+  - DOMAIN-SUFFIX,edgedatg.com
+  - DOMAIN-SUFFIX,go.com
 
-  # > encoreTVB
-  - PROCESS-NAME,com.tvbusa.encore
-  - DOMAIN-SUFFIX,encoretvb.com
-  - DOMAIN,content.jwplatform.com
-  - DOMAIN,videos-f.jwpsrv.com
+  # > AbemaTV
+  # - USER-AGENT,AbemaTV*
+  - PROCESS-NAME,tv.abema
+  - DOMAIN-SUFFIX,abema-tv.com
+  - DOMAIN-SUFFIX,abema.adx.promo
+  - DOMAIN-SUFFIX,abema.io
+  - DOMAIN-SUFFIX,abema.tv
+  - DOMAIN-SUFFIX,ameba.jp
+  - DOMAIN-SUFFIX,bucketeer.jp
+  - DOMAIN-SUFFIX,ds-linear-abematv.akamaized.net
+  - DOMAIN-SUFFIX,ds-vod-abematv.akamaized.net
+  - DOMAIN-SUFFIX,hayabusa.io
+  - DOMAIN-SUFFIX,hayabusa.media
+  - DOMAIN-SUFFIX,linear-abematv.akamaized.net
+  - DOMAIN-SUFFIX,vod-abematv.akamaized.net
+  - DOMAIN-SUFFIX,vod-playout-abematv.akamaized.net
 
   # > Amazon Prime Video
   # - USER-AGENT,InstantVideo.US*
@@ -36,6 +45,86 @@ payload:
   - DOMAIN-SUFFIX,pv-cdn.net
   - DOMAIN-SUFFIX,video.a2z.com
 
+  # > Apple Music
+  # - USER-AGENT,Music*
+  - PROCESS-NAME,music
+  - DOMAIN-SUFFIX,applemusic.com
+  - DOMAIN-SUFFIX,music.apple.com
+  - DOMAIN,aod.itunes.apple.com
+  - DOMAIN,aod-ssl.itunes.apple.com
+  - DOMAIN,audio.itunes.apple.com
+  - DOMAIN,audio-ssl.itunes.apple.com
+  - DOMAIN,mvod.itunes.apple.com
+  - DOMAIN,streamingaudio.itunes.apple.com
+
+  # iCloud Music Library
+  - DOMAIN-SUFFIX,blobstore.apple.com
+
+  # > Apple News and Apple Map TOMTOM Version
+  # - USER-AGENT,AppleNews*
+  # - USER-AGENT,com.apple.news*
+  - DOMAIN,gspe1-ssl.ls.apple.com
+  # - USER-AGENT,News*
+  # - DOMAIN,apple.comscoreresearch.com
+  # - DOMAIN,gateway.icloud.com
+  # - DOMAIN,news-client.apple.com
+  # - DOMAIN,news-edge.apple.com
+  # - DOMAIN,news-events.apple.com
+  # - DOMAIN-SUFFIX,apple.news
+
+  # > Apple TV
+  - DOMAIN,np-edge.itunes.apple.com
+  - DOMAIN,play-edge.itunes.apple.com
+  - DOMAIN,uts-api.itunes.apple.com
+  - DOMAIN-SUFFIX,tv.apple.com
+
+  # > BBC iPlayer
+  - PROCESS-NAME,bbc.iplayer.android
+  - DOMAIN-KEYWORD,-uk-live.akamaized.net
+  - DOMAIN-KEYWORD,bbcfmt
+  - DOMAIN-SUFFIX,bbc.co
+  - DOMAIN-SUFFIX,bbc.co.uk
+  - DOMAIN-SUFFIX,bbc.com
+  - DOMAIN-SUFFIX,bbcfmt.hs.llnwd.net
+  - DOMAIN-SUFFIX,bbci.co
+  - DOMAIN-SUFFIX,bbci.co.uk
+  - DOMAIN-SUFFIX,bidi.net.uk
+
+  # > Bahamut
+  # - USER-AGENT,Anime*
+  - PROCESS-NAME,tw.com.gamer.android.animad
+  - DOMAIN-SUFFIX,bahamut.com.tw
+  - DOMAIN-SUFFIX,gamer.com.tw
+  - DOMAIN,gamer-cds.cdn.hinet.net
+  - DOMAIN,gamer2-cds.cdn.hinet.net
+  - DOMAIN,bahamut.akamaized.net
+
+  # > DAZN
+  # - USER-AGENT,DAZN*
+
+  - PROCESS-NAME,com.dazn
+
+  - DOMAIN-SUFFIX,dazn-api.com
+  - DOMAIN-SUFFIX,dazn.com
+  - DOMAIN-SUFFIX,dazndn.com
+  - DOMAIN-SUFFIX,indazn.com
+  - DOMAIN-SUFFIX,indaznlab.com
+  - DOMAIN-SUFFIX,dcalivedazn.akamaized.net
+  - DOMAIN-SUFFIX,dcblivedazn.akamaized.net
+  - DOMAIN-SUFFIX,dc1live2lindazn.akamaized.net
+  - DOMAIN-SUFFIX,dc1-lm-live2dazn.secure.footprint.net
+  - DOMAIN-SUFFIX,dc1voddazn.akamaized.net
+  - DOMAIN-SUFFIX,dc2voddazn.akamaized.net
+
+  # > DMM
+  - DOMAIN-SUFFIX,dmm-extension.com
+  - DOMAIN-SUFFIX,dmm.co.jp
+  - DOMAIN-SUFFIX,dmm.com
+  - DOMAIN-SUFFIX,img.vm-movie.jp
+  - DOMAIN-SUFFIX,p-smith.com
+  - DOMAIN-SUFFIX,videomarket.jp
+  - DOMAIN-SUFFIX,vmdash-cenc.akamaized.net
+
   # > Discovery Plus
   - PROCESS-NAME,com.discovery.discoveryplus.mobile
   - DOMAIN-SUFFIX,content-ause1-ur-discovery1.uplynk.com
@@ -47,43 +136,47 @@ payload:
   - DOMAIN-SUFFIX,mobile-collector.newrelic.com
   - DOMAIN-SUFFIX,uplynk.com
 
-  # > TikTok
-  - DOMAIN-SUFFIX,byteoversea.com
-  - DOMAIN-SUFFIX,ibytedtos.com
-  - DOMAIN-SUFFIX,ibyteimg.com
-  - DOMAIN-SUFFIX,ipstatp.com
-  - DOMAIN-SUFFIX,muscdn.com
-  - DOMAIN-SUFFIX,musical.ly
-  - DOMAIN-SUFFIX,sgpstatp.com
-  - DOMAIN-SUFFIX,snssdk.com
-  - DOMAIN-SUFFIX,tik-tokapi.com
-  - DOMAIN-SUFFIX,tiktok.com
-  - DOMAIN-SUFFIX,tiktokcdn.com
-  - DOMAIN-SUFFIX,tiktokv.com
-#  - USER-AGENT,TikTok*
+  # > Disney Plus
+  # - USER-AGENT,Disney*
+  - PROCESS-NAME,com.disney.disneyplus
+  - DOMAIN-SUFFIX,cdn.registerdisney.go.com
+  - DOMAIN-SUFFIX,disney-plus.net
+  - DOMAIN-SUFFIX,disney.api.edge.bamgrid.com
+  - DOMAIN-SUFFIX,disney.connections.edge.bamgrid.com
+  - DOMAIN-SUFFIX,disneynow.com
+  - DOMAIN-SUFFIX,disneyplus.com
+  - DOMAIN-SUFFIX,disneystreaming.com
+  - DOMAIN-SUFFIX,dssott.com
 
-  # > AbemaTV
-  # - USER-AGENT,AbemaTV*
-  - PROCESS-NAME,tv.abema
-  - DOMAIN-SUFFIX,abema-tv.com
-  - DOMAIN-SUFFIX,abema.adx.promo
-  - DOMAIN-SUFFIX,abema.io
-  - DOMAIN-SUFFIX,abema.tv
-  - DOMAIN-SUFFIX,ameba.jp
-  - DOMAIN-SUFFIX,bucketeer.jp
-  - DOMAIN-SUFFIX,ds-linear-abematv.akamaized.net
-  - DOMAIN-SUFFIX,ds-vod-abematv.akamaized.net
-  - DOMAIN-SUFFIX,hayabusa.io
-  - DOMAIN-SUFFIX,hayabusa.media
-  - DOMAIN-SUFFIX,linear-abematv.akamaized.net
-  - DOMAIN-SUFFIX,vod-abematv.akamaized.net
-  - DOMAIN-SUFFIX,vod-playout-abematv.akamaized.net
+  # > F1 TV
+  - DOMAIN,d2n9h2wits23hf.cloudfront.net
+  - DOMAIN,f1prodlive.akamaized.net
+  - DOMAIN,mobile-collector.newrelic.com
+  - DOMAIN-SUFFIX,bitmovin.com
+  - DOMAIN-SUFFIX,f1esports.com
+  - DOMAIN-SUFFIX,f1manager.com
+  - DOMAIN-SUFFIX,f1play.com
+  - DOMAIN-SUFFIX,formula1.com
 
   # > Fox Now
   # - USER-AGENT,FOX%20NOW*
   - DOMAIN-SUFFIX,fox.com
   - DOMAIN-SUFFIX,foxdcg.com
   - DOMAIN-SUFFIX,uplynk.com
+
+  # > Fox+ (HK|TW|SG)
+  # - USER-AGENT,FOXPlus*
+  - DOMAIN-SUFFIX,akamaized.net
+  - DOMAIN-SUFFIX,foxplus.com
+  - DOMAIN-SUFFIX,theplatform.com
+
+  # > Hulu(フールー)
+  - PROCESS-NAME,jp.happyon.android
+  - DOMAIN-SUFFIX,happyon.jp
+  - DOMAIN-SUFFIX,hulu.jp
+  - DOMAIN-SUFFIX,prod.hjholdings.tv
+  - DOMAIN-SUFFIX,streaks.jp
+  - DOMAIN-SUFFIX,yb.uncn.jp
 
   # > Hulu
   - PROCESS-NAME,com.hulu.plus
@@ -108,57 +201,40 @@ payload:
   - DOMAIN,hulu.com.c.footprint.net
   - DOMAIN,hulu.map.fastly.net
 
-  # > Pandora
-  - PROCESS-NAME,com.pandora.android
-  - DOMAIN-SUFFIX,pandora.com
+  # > JOOX
+  - PROCESS-NAME,com.tencent.ibg.joox
+  - PROCESS-NAME,com.tencent.ibg.jooxtv
+  - DOMAIN-SUFFIX,joox.com
+  - DOMAIN-KEYWORD,jooxweb-api
 
-  # > myTV_SUPER
-  # - USER-AGENT,mytv*
-  - DOMAIN-KEYWORD,nowtv100
-  - DOMAIN-KEYWORD,rthklive
-  - DOMAIN-SUFFIX,mytvsuper.com
-  - DOMAIN-SUFFIX,tvb.com
+  # > Japonx
+  - DOMAIN-KEYWORD,japonx
+  - DOMAIN-KEYWORD,japronx
+  - DOMAIN-SUFFIX,japonx.com
+  - DOMAIN-SUFFIX,japonx.tv
+  - DOMAIN-SUFFIX,japonx.net
+  - DOMAIN-SUFFIX,japonx.vip
+  - DOMAIN-SUFFIX,japronx.com
+  - DOMAIN-SUFFIX,japronx.tv
+  - DOMAIN-SUFFIX,japronx.net
+  - DOMAIN-SUFFIX,japronx.vip
 
   # > KKBOX
   - DOMAIN-SUFFIX,kkbox.com
   - DOMAIN-SUFFIX,kkbox.com.tw
   - DOMAIN-SUFFIX,kfs.io
 
-  # > Spotify
-  # - USER-AGENT,Spotify*
+  # > KKTV
+  - PROCESS-NAME,com.kktv.kktv
+  - DOMAIN-SUFFIX,kktv.me
+  - DOMAIN-SUFFIX,kktv.com.tw
+  - DOMAIN,kktv-theater.kk.stream
 
-  - PROCESS-NAME,com.spotify.music
-
-  - DOMAIN-KEYWORD,spotify
-
-  - DOMAIN-SUFFIX,pscdn.co
-  - DOMAIN-SUFFIX,scdn.co
-  - DOMAIN-SUFFIX,spoti.fi
-  - DOMAIN-SUFFIX,spotilocal.com
-
-  # > Apple Music
-  # - USER-AGENT,Music*
-  - PROCESS-NAME,music
-  - DOMAIN-SUFFIX,applemusic.com
-  - DOMAIN-SUFFIX,music.apple.com
-  - DOMAIN,aod.itunes.apple.com
-  - DOMAIN,aod-ssl.itunes.apple.com
-  - DOMAIN,audio.itunes.apple.com
-  - DOMAIN,audio-ssl.itunes.apple.com
-  - DOMAIN,mvod.itunes.apple.com
-  - DOMAIN,streamingaudio.itunes.apple.com
-
-  # iCloud Music Library
-  - DOMAIN-SUFFIX,blobstore.apple.com
-
-  # > DMM
-  - DOMAIN-SUFFIX,dmm-extension.com
-  - DOMAIN-SUFFIX,dmm.co.jp
-  - DOMAIN-SUFFIX,dmm.com
-  - DOMAIN-SUFFIX,img.vm-movie.jp
-  - DOMAIN-SUFFIX,p-smith.com
-  - DOMAIN-SUFFIX,videomarket.jp
-  - DOMAIN-SUFFIX,vmdash-cenc.akamaized.net
+  # > Line TV
+  # - USER-AGENT,LINE*
+  - DOMAIN-SUFFIX,d3c7rimkq79yfu.cloudfront.net
+  - DOMAIN-SUFFIX,linetv.tw
+  - DOMAIN-SUFFIX,profile.line-scdn.net
 
   # > Max
   - DOMAIN-SUFFIX,max.com
@@ -181,17 +257,93 @@ payload:
   - DOMAIN,sdk.iad-01.braze.com
   - DOMAIN-SUFFIX,branch.io
 
-  # > BBC iPlayer
-  - PROCESS-NAME,bbc.iplayer.android
-  - DOMAIN-KEYWORD,-uk-live.akamaized.net
-  - DOMAIN-KEYWORD,bbcfmt
-  - DOMAIN-SUFFIX,bbc.co
-  - DOMAIN-SUFFIX,bbc.co.uk
-  - DOMAIN-SUFFIX,bbc.com
-  - DOMAIN-SUFFIX,bbcfmt.hs.llnwd.net
-  - DOMAIN-SUFFIX,bbci.co
-  - DOMAIN-SUFFIX,bbci.co.uk
-  - DOMAIN-SUFFIX,bidi.net.uk
+  # > Netflix
+  - DOMAIN-SUFFIX,netflix.com
+  - DOMAIN-SUFFIX,netflix.net
+  - DOMAIN-SUFFIX,nflxext.com
+  - DOMAIN-SUFFIX,nflximg.com
+  - DOMAIN-SUFFIX,nflximg.net
+  - DOMAIN-SUFFIX,nflxso.net
+  - DOMAIN-SUFFIX,nflxvideo.net
+
+  # > Niconico
+  - DOMAIN-SUFFIX,dmc.nico
+  - DOMAIN-SUFFIX,nicovideo.jp
+  - DOMAIN-SUFFIX,nicodic.jp
+  - DOMAIN-SUFFIX,nicomanga.jp
+  - DOMAIN-SUFFIX,niconico.com
+  - DOMAIN-SUFFIX,nicoseiga.jp
+  - DOMAIN-SUFFIX,nimg.jp
+  - DOMAIN-SUFFIX,simg.jp
+  - DOMAIN-SUFFIX,socdm.com
+
+  # > PBS
+  # - USER-AGENT,PBS*
+  - DOMAIN-SUFFIX,pbs.org
+
+  # > Pandora
+  - PROCESS-NAME,com.pandora.android
+  - DOMAIN-SUFFIX,pandora.com
+
+  # > Pornhub
+  - DOMAIN-SUFFIX,phncdn.com
+  - DOMAIN-SUFFIX,phprcdn.com
+  - DOMAIN-SUFFIX,pornhub.com
+  - DOMAIN-SUFFIX,pornhubpremium.com
+
+  # > SoundCloud
+  # - USER-AGENT,SoundCloud*
+
+  - DOMAIN-SUFFIX,sndcdn.com
+  - DOMAIN-SUFFIX,soundcloud.app.goo.gl
+  - DOMAIN-SUFFIX,soundcloud.com
+  - DOMAIN-SUFFIX,soundcloudmail.com
+
+  # > Spotify
+  # - USER-AGENT,Spotify*
+
+  - PROCESS-NAME,com.spotify.music
+
+  - DOMAIN-KEYWORD,spotify
+
+  - DOMAIN-SUFFIX,pscdn.co
+  - DOMAIN-SUFFIX,scdn.co
+  - DOMAIN-SUFFIX,spoti.fi
+  - DOMAIN-SUFFIX,spotilocal.com
+
+  # > TikTok
+  - DOMAIN-SUFFIX,byteoversea.com
+  - DOMAIN-SUFFIX,ibytedtos.com
+  - DOMAIN-SUFFIX,ibyteimg.com
+  - DOMAIN-SUFFIX,ipstatp.com
+  - DOMAIN-SUFFIX,muscdn.com
+  - DOMAIN-SUFFIX,musical.ly
+  - DOMAIN-SUFFIX,sgpstatp.com
+  - DOMAIN-SUFFIX,snssdk.com
+  - DOMAIN-SUFFIX,tik-tokapi.com
+  - DOMAIN-SUFFIX,tiktok.com
+  - DOMAIN-SUFFIX,tiktokcdn.com
+  - DOMAIN-SUFFIX,tiktokv.com
+#  - USER-AGENT,TikTok*
+
+  # > ViuTV
+  - PROCESS-NAME,com.hktve.viutv
+
+  - DOMAIN-SUFFIX,bootstrapcdn.com
+  - DOMAIN-SUFFIX,cloudfront.net
+  - DOMAIN-SUFFIX,cognito-identity.us-east-1.amazonaws.com
+  - DOMAIN-SUFFIX,firebaseio.com
+  - DOMAIN-SUFFIX,jwpcdn.com
+  - DOMAIN-SUFFIX,jwplayer.com
+  - DOMAIN-SUFFIX,mobileanalytics.us-east-1.amazonaws.com
+  - DOMAIN-SUFFIX,nowe.com
+  - DOMAIN-SUFFIX,viu.com
+  - DOMAIN-SUFFIX,viu.tv
+  - DOMAIN-SUFFIX,viu.now.com
+
+  # > Youtube Music
+  - PROCESS-NAME,com.google.android.apps.youtube.music
+  - PROCESS-NAME,com.google.android.youtube.tvmusic
 
   # > Youtube
   - PROCESS-NAME,com.google.android.youtube
@@ -362,168 +514,16 @@ payload:
   - DOMAIN-SUFFIX,yt3.ggpht.com
   - DOMAIN-SUFFIX,ytimg.com
 
-  # > Bahamut
-  # - USER-AGENT,Anime*
-  - PROCESS-NAME,tw.com.gamer.android.animad
-  - DOMAIN-SUFFIX,bahamut.com.tw
-  - DOMAIN-SUFFIX,gamer.com.tw
-  - DOMAIN,gamer-cds.cdn.hinet.net
-  - DOMAIN,gamer2-cds.cdn.hinet.net
-  - DOMAIN,bahamut.akamaized.net
+  # > encoreTVB
+  - PROCESS-NAME,com.tvbusa.encore
+  - DOMAIN-SUFFIX,encoretvb.com
+  - DOMAIN,content.jwplatform.com
+  - DOMAIN,videos-f.jwpsrv.com
 
-  # > Apple TV
-  - DOMAIN,np-edge.itunes.apple.com
-  - DOMAIN,play-edge.itunes.apple.com
-  - DOMAIN,uts-api.itunes.apple.com
-  - DOMAIN-SUFFIX,tv.apple.com
-
-  # > Pornhub
-  - DOMAIN-SUFFIX,phncdn.com
-  - DOMAIN-SUFFIX,phprcdn.com
-  - DOMAIN-SUFFIX,pornhub.com
-  - DOMAIN-SUFFIX,pornhubpremium.com
-
-  # > Hulu(フールー)
-  - PROCESS-NAME,jp.happyon.android
-  - DOMAIN-SUFFIX,happyon.jp
-  - DOMAIN-SUFFIX,hulu.jp
-  - DOMAIN-SUFFIX,prod.hjholdings.tv
-  - DOMAIN-SUFFIX,streaks.jp
-  - DOMAIN-SUFFIX,yb.uncn.jp
-
-  # > PBS
-  # - USER-AGENT,PBS*
-  - DOMAIN-SUFFIX,pbs.org
-
-  # > KKTV
-  - PROCESS-NAME,com.kktv.kktv
-  - DOMAIN-SUFFIX,kktv.me
-  - DOMAIN-SUFFIX,kktv.com.tw
-  - DOMAIN,kktv-theater.kk.stream
-
-  # > Fox+ (HK|TW|SG)
-  # - USER-AGENT,FOXPlus*
-  - DOMAIN-SUFFIX,akamaized.net
-  - DOMAIN-SUFFIX,foxplus.com
-  - DOMAIN-SUFFIX,theplatform.com
-
-  # > Youtube Music
-  - PROCESS-NAME,com.google.android.apps.youtube.music
-  - PROCESS-NAME,com.google.android.youtube.tvmusic
-
-  # > F1 TV
-  - DOMAIN,d2n9h2wits23hf.cloudfront.net
-  - DOMAIN,f1prodlive.akamaized.net
-  - DOMAIN,mobile-collector.newrelic.com
-  - DOMAIN-SUFFIX,bitmovin.com
-  - DOMAIN-SUFFIX,f1esports.com
-  - DOMAIN-SUFFIX,f1manager.com
-  - DOMAIN-SUFFIX,f1play.com
-  - DOMAIN-SUFFIX,formula1.com
-
-  # > Netflix
-  - DOMAIN-SUFFIX,netflix.com
-  - DOMAIN-SUFFIX,netflix.net
-  - DOMAIN-SUFFIX,nflxext.com
-  - DOMAIN-SUFFIX,nflximg.com
-  - DOMAIN-SUFFIX,nflximg.net
-  - DOMAIN-SUFFIX,nflxso.net
-  - DOMAIN-SUFFIX,nflxvideo.net
-
-  # > Japonx
-  - DOMAIN-KEYWORD,japonx
-  - DOMAIN-KEYWORD,japronx
-  - DOMAIN-SUFFIX,japonx.com
-  - DOMAIN-SUFFIX,japonx.tv
-  - DOMAIN-SUFFIX,japonx.net
-  - DOMAIN-SUFFIX,japonx.vip
-  - DOMAIN-SUFFIX,japronx.com
-  - DOMAIN-SUFFIX,japronx.tv
-  - DOMAIN-SUFFIX,japronx.net
-  - DOMAIN-SUFFIX,japronx.vip
-
-  # > DAZN
-  # - USER-AGENT,DAZN*
-
-  - PROCESS-NAME,com.dazn
-
-  - DOMAIN-SUFFIX,dazn-api.com
-  - DOMAIN-SUFFIX,dazn.com
-  - DOMAIN-SUFFIX,dazndn.com
-  - DOMAIN-SUFFIX,indazn.com
-  - DOMAIN-SUFFIX,indaznlab.com
-  - DOMAIN-SUFFIX,dcalivedazn.akamaized.net
-  - DOMAIN-SUFFIX,dcblivedazn.akamaized.net
-  - DOMAIN-SUFFIX,dc1live2lindazn.akamaized.net
-  - DOMAIN-SUFFIX,dc1-lm-live2dazn.secure.footprint.net
-  - DOMAIN-SUFFIX,dc1voddazn.akamaized.net
-  - DOMAIN-SUFFIX,dc2voddazn.akamaized.net
-
-  # > ViuTV
-  - PROCESS-NAME,com.hktve.viutv
-
-  - DOMAIN-SUFFIX,bootstrapcdn.com
-  - DOMAIN-SUFFIX,cloudfront.net
-  - DOMAIN-SUFFIX,cognito-identity.us-east-1.amazonaws.com
-  - DOMAIN-SUFFIX,firebaseio.com
-  - DOMAIN-SUFFIX,jwpcdn.com
-  - DOMAIN-SUFFIX,jwplayer.com
-  - DOMAIN-SUFFIX,mobileanalytics.us-east-1.amazonaws.com
-  - DOMAIN-SUFFIX,nowe.com
-  - DOMAIN-SUFFIX,viu.com
-  - DOMAIN-SUFFIX,viu.tv
-  - DOMAIN-SUFFIX,viu.now.com
-
-  # > Line TV
-  # - USER-AGENT,LINE*
-  - DOMAIN-SUFFIX,d3c7rimkq79yfu.cloudfront.net
-  - DOMAIN-SUFFIX,linetv.tw
-  - DOMAIN-SUFFIX,profile.line-scdn.net
-
-  # > Apple News and Apple Map TOMTOM Version
-  # - USER-AGENT,AppleNews*
-  # - USER-AGENT,com.apple.news*
-  - DOMAIN,gspe1-ssl.ls.apple.com
-  # - USER-AGENT,News*
-  # - DOMAIN,apple.comscoreresearch.com
-  # - DOMAIN,gateway.icloud.com
-  # - DOMAIN,news-client.apple.com
-  # - DOMAIN,news-edge.apple.com
-  # - DOMAIN,news-events.apple.com
-  # - DOMAIN-SUFFIX,apple.news
-
-  # > SoundCloud
-  # - USER-AGENT,SoundCloud*
-
-  - DOMAIN-SUFFIX,sndcdn.com
-  - DOMAIN-SUFFIX,soundcloud.app.goo.gl
-  - DOMAIN-SUFFIX,soundcloud.com
-  - DOMAIN-SUFFIX,soundcloudmail.com
-
-  # > Disney Plus
-  # - USER-AGENT,Disney*
-  - PROCESS-NAME,com.disney.disneyplus
-  - DOMAIN-SUFFIX,cdn.registerdisney.go.com
-  - DOMAIN-SUFFIX,disney-plus.net
-  - DOMAIN-SUFFIX,disney.api.edge.bamgrid.com
-  - DOMAIN-SUFFIX,disney.connections.edge.bamgrid.com
-  - DOMAIN-SUFFIX,disneynow.com
-  - DOMAIN-SUFFIX,disneyplus.com
-  - DOMAIN-SUFFIX,disneystreaming.com
-  - DOMAIN-SUFFIX,dssott.com
-
-  # > Niconico
-  - DOMAIN-SUFFIX,dmc.nico
-  - DOMAIN-SUFFIX,nicovideo.jp
-  - DOMAIN-SUFFIX,nicodic.jp
-  - DOMAIN-SUFFIX,nicomanga.jp
-  - DOMAIN-SUFFIX,niconico.com
-  - DOMAIN-SUFFIX,nicoseiga.jp
-  - DOMAIN-SUFFIX,nimg.jp
-  - DOMAIN-SUFFIX,simg.jp
-  - DOMAIN-SUFFIX,socdm.com
-
-  # > ABC
-  - DOMAIN-SUFFIX,edgedatg.com
-  - DOMAIN-SUFFIX,go.com
+  # > myTV_SUPER
+  # - USER-AGENT,mytv*
+  - DOMAIN-KEYWORD,nowtv100
+  - DOMAIN-KEYWORD,rthklive
+  - DOMAIN-SUFFIX,mytvsuper.com
+  - DOMAIN-SUFFIX,tvb.com
 

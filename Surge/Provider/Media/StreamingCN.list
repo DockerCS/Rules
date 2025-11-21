@@ -1,7 +1,3 @@
-# > Emby Media
-DOMAIN-SUFFIX,cn2gias.uk
-DOMAIN-SUFFIX,zdz.plus
-
 # > Bilibili
 USER-AGENT,bili*
 DOMAIN-SUFFIX,acg.tv
@@ -18,30 +14,37 @@ DOMAIN,upos-hz-mirrorakam.akamaized.net
 USER-AGENT,bili-inter*
 DOMAIN,apiintl.biliapi.net
 
-# > Youku
-DOMAIN-SUFFIX,soku.com
-DOMAIN-SUFFIX,youku.com
-DOMAIN-SUFFIX,ykimg.com
+# > Douyin
+DOMAIN-SUFFIX,amemv.com
+DOMAIN-SUFFIX,ixigua.com
+DOMAIN-SUFFIX,ixiguavideo.com
+DOMAIN-SUFFIX,pstatp.com
+DOMAIN-SUFFIX,snssdk.com
+DOMAIN-SUFFIX,toutiao.com
 
-# > Netease Music
-DOMAIN-SUFFIX,music.163.com
-DOMAIN-SUFFIX,music.126.net
+# > Emby Media
+DOMAIN-SUFFIX,cn2gias.uk
+DOMAIN-SUFFIX,zdz.plus
 
-# > letv
-DOMAIN-SUFFIX,api.mob.app.letv.com
-
-# > MOO
-USER-AGENT,MOO*
-USER-AGENT,TencentMidasConnect*
-
-# > Tencent Video
-DOMAIN-SUFFIX,v.smtcdns.com
-DOMAIN-SUFFIX,vv.video.qq.com
-
-# > WeTV
-USER-AGENT,WeTV*
-DOMAIN-SUFFIX,wetv.vip
-DOMAIN-SUFFIX,wetvinfo.com
+DOMAIN-SUFFIX,iq.com,Foreign Media
+DOMAIN-SUFFIX,inter.iqiyi.com,Foreign Media
+DOMAIN-SUFFIX,intl-rcd.iqiyi.com,Foreign Media
+DOMAIN-SUFFIX,intl-subscription.iqiyi.com,Foreign Media
+DOMAIN-SUFFIX,intl.iqiyi.com,Foreign Media
+IP-CIDR,23.40.242.10/32,no-resolve
+IP-CIDR,23.59.252.0/24,no-resolve
+IP-CIDR,23.200.145.146/32,no-resolve
+IP-CIDR,23.210.215.186/32,no-resolve
+IP-CIDR,23.211.15.0/24,no-resolve
+IP-CIDR,23.219.172.0/24,no-resolve
+IP-CIDR,104.85.165.17/32,no-resolve
+IP-CIDR,110.238.107.47/32,no-resolve
+IP-CIDR,118.26.32.162/32,no-resolve
+IP-CIDR,159.138.102.146/32,no-resolve
+IP-CIDR,184.51.102.0/24,no-resolve
+IP-CIDR,203.74.95.130/28,no-resolve
+IP-CIDR,203.80.97.203/32,no-resolve
+IP-CIDR,210.71.227.202/32,no-resolve
 
 // > IQIYI
 USER-AGENT,*QIYI*
@@ -82,31 +85,28 @@ DOMAIN-SUFFIX,qy.com
 DOMAIN-SUFFIX,qy.net
 DOMAIN-SUFFIX,suike.cn
 
-DOMAIN-SUFFIX,iq.com,Foreign Media
-DOMAIN-SUFFIX,inter.iqiyi.com,Foreign Media
-DOMAIN-SUFFIX,intl-rcd.iqiyi.com,Foreign Media
-DOMAIN-SUFFIX,intl-subscription.iqiyi.com,Foreign Media
-DOMAIN-SUFFIX,intl.iqiyi.com,Foreign Media
-IP-CIDR,23.40.242.10/32,no-resolve
-IP-CIDR,23.59.252.0/24,no-resolve
-IP-CIDR,23.200.145.146/32,no-resolve
-IP-CIDR,23.210.215.186/32,no-resolve
-IP-CIDR,23.211.15.0/24,no-resolve
-IP-CIDR,23.219.172.0/24,no-resolve
-IP-CIDR,104.85.165.17/32,no-resolve
-IP-CIDR,110.238.107.47/32,no-resolve
-IP-CIDR,118.26.32.162/32,no-resolve
-IP-CIDR,159.138.102.146/32,no-resolve
-IP-CIDR,184.51.102.0/24,no-resolve
-IP-CIDR,203.74.95.130/28,no-resolve
-IP-CIDR,203.80.97.203/32,no-resolve
-IP-CIDR,210.71.227.202/32,no-resolve
+# > letv
+DOMAIN-SUFFIX,api.mob.app.letv.com
 
-# > Douyin
-DOMAIN-SUFFIX,amemv.com
-DOMAIN-SUFFIX,ixigua.com
-DOMAIN-SUFFIX,ixiguavideo.com
-DOMAIN-SUFFIX,pstatp.com
-DOMAIN-SUFFIX,snssdk.com
-DOMAIN-SUFFIX,toutiao.com
+# > MOO
+USER-AGENT,MOO*
+USER-AGENT,TencentMidasConnect*
+
+# > Netease Music
+DOMAIN-SUFFIX,music.163.com
+DOMAIN-SUFFIX,music.126.net
+
+# > Tencent Video
+DOMAIN-SUFFIX,v.smtcdns.com
+DOMAIN-SUFFIX,vv.video.qq.com
+
+# > WeTV
+USER-AGENT,WeTV*
+DOMAIN-SUFFIX,wetv.vip
+DOMAIN-SUFFIX,wetvinfo.com
+
+# > Youku
+DOMAIN-SUFFIX,soku.com
+DOMAIN-SUFFIX,youku.com
+DOMAIN-SUFFIX,ykimg.com
 
