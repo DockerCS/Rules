@@ -26,6 +26,7 @@ DOMAIN-SUFFIX,chorus.sh
 # > Claude
 DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,claude.ai
+DOMAIN-SUFFIX,claude.com
 DOMAIN-SUFFIX,claudeusercontent.com
 
 # > Cloudflare AI Gateway
@@ -70,6 +71,7 @@ DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com
 DOMAIN-SUFFIX,aisandbox-pa.googleapis.com
 DOMAIN-SUFFIX,apis.google.com
 DOMAIN-SUFFIX,bard.google.com
+DOMAIN-SUFFIX,gemini.google
 DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,robinfrontend-pa.googleapis.com
 
@@ -118,6 +120,10 @@ DOMAIN-SUFFIX,smoot.apple.com
 # > Sora
 DOMAIN-SUFFIX,sora.com
 DOMAIN,sora-cdn.oaistatic.com
+
+# > TRAE
+DOMAIN-SUFFIX,trae.ai
+DOMAIN-SUFFIX,traeapi.us
 
 # > Windsurf
 DOMAIN-SUFFIX,windsurf.com
