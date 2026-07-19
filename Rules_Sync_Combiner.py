@@ -22,6 +22,26 @@ class GitHubArchiveTree(NamedTuple):
     subdir: Path
 
 
+class VendorConfig(NamedTuple):
+    vendor: str
+    extension: str
+    provider_archive_subdir: Path
+    is_clash_yaml: bool
+
+
+class ProviderSyncTask(NamedTuple):
+    vendor: str
+    source: GitHubArchiveTree
+    target: Path
+
+
+class DirectSyncTask(NamedTuple):
+    label: str
+    url: str
+    target: Path
+    vendor: str
+
+
 class StreamingCombineTask(NamedTuple):
     vendor: str
     extension: str
@@ -31,73 +51,60 @@ class StreamingCombineTask(NamedTuple):
     is_clash_yaml: bool
 
 
-DLER_RULES_ARCHIVE_URL = (
-    "https://github.com/dler-io/Rules/archive/refs/heads/main.zip"
+DLER_RULES_ARCHIVE_URL = "https://github.com/dler-io/Rules/archive/refs/heads/main.zip"
+GET_SOME_FRIES_RAW_URL = (
+    "https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/main/ruleset"
+)
+BLACKMATRIX7_RAW_URL = (
+    "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/"
+    "master/rule"
+)
+KEEP_EXISTING = True
+REMOVE_INCOMPLETE = False
+
+VENDOR_CONFIGS = (
+    VendorConfig("Clash", ".yaml", Path("Clash/Provider"), True),
+    VendorConfig("Surge", ".list", Path("Surge/Surge 3/Provider"), False),
 )
 
-PROVIDER_SYNC_TASKS = (
-    (
-        "Surge",
-        GitHubArchiveTree(
-            DLER_RULES_ARCHIVE_URL,
-            Path("Surge") / "Surge 3" / "Provider",
-        ),
-        Path("Surge") / "Provider",
-    ),
-    (
-        "Clash",
-        GitHubArchiveTree(
-            DLER_RULES_ARCHIVE_URL,
-            Path("Clash") / "Provider",
-        ),
-        Path("Clash") / "Provider",
-    ),
+PROVIDER_SYNC_TASKS = tuple(
+    ProviderSyncTask(
+        config.vendor,
+        GitHubArchiveTree(DLER_RULES_ARCHIVE_URL, config.provider_archive_subdir),
+        Path(config.vendor) / "Provider",
+    )
+    for config in reversed(VENDOR_CONFIGS)
 )
 
-ASN_SYNC_TASKS = (
-    (
-        "Surge ASNChina.list",
-        "https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/"
-        "main/ruleset/ASN.China.list",
-        Path("Surge") / "Provider" / "ASNChina.list",
-        "Surge",
-    ),
-    (
-        "Clash ASNChina.yaml",
-        "https://raw.githubusercontent.com/VirgilClyne/GetSomeFries/"
-        "main/ruleset/ASN.China.yaml",
-        Path("Clash") / "Provider" / "ASNChina.yaml",
-        "Clash",
-    ),
+ASN_SYNC_TASKS = tuple(
+    DirectSyncTask(
+        f"{config.vendor} ASNChina{config.extension}",
+        f"{GET_SOME_FRIES_RAW_URL}/ASN.China{config.extension}",
+        Path(config.vendor) / "Provider" / f"ASNChina{config.extension}",
+        config.vendor,
+    )
+    for config in reversed(VENDOR_CONFIGS)
 )
 
-BLACKMATRIX7_TIKTOK_SYNC_TASKS = (
-    (
-        "Surge blackmatrix7 TikTok.list",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/"
-        "master/rule/Surge/TikTok/TikTok.list",
-        Path("Surge") / "Provider" / "Media" / "TikTok.list",
-        "Surge",
-    ),
-    (
-        "Clash blackmatrix7 TikTok.yaml",
-        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/"
-        "master/rule/Clash/TikTok/TikTok.yaml",
-        Path("Clash") / "Provider" / "Media" / "TikTok.yaml",
-        "Clash",
-    ),
+BLACKMATRIX7_TIKTOK_SYNC_TASKS = tuple(
+    DirectSyncTask(
+        f"{config.vendor} blackmatrix7 TikTok{config.extension}",
+        f"{BLACKMATRIX7_RAW_URL}/{config.vendor}/TikTok/TikTok{config.extension}",
+        Path(config.vendor) / "Provider" / "Media" / f"TikTok{config.extension}",
+        config.vendor,
+    )
+    for config in reversed(VENDOR_CONFIGS)
 )
 
-MEDIA_RULE_MOVE_TASKS = (
-    ("Clash", "Douyin.yaml"),
-    ("Clash", "TikTok.yaml"),
-    ("Surge", "Douyin.list"),
-    ("Surge", "TikTok.list"),
+MEDIA_RULE_MOVE_TASKS = tuple(
+    (config.vendor, f"{basename}{config.extension}")
+    for config in VENDOR_CONFIGS
+    for basename in ("Douyin", "TikTok")
 )
 
 PRESERVED_MEDIA_RULES = {
-    "Clash": ("Emby.yaml",),
-    "Surge": ("Emby.list",),
+    config.vendor: (f"Emby{config.extension}",)
+    for config in VENDOR_CONFIGS
 }
 
 # Clash / Surge 归入 StreamingCN 的文件共用同一份基础名单
@@ -115,26 +122,26 @@ STREAMING_CN_BASENAMES: set[str] = {
     "Youku",
 }
 
-CLASH_STREAMING_CN_FILES = {f"{name}.yaml" for name in STREAMING_CN_BASENAMES}
-SURGE_STREAMING_CN_FILES = {f"{name}.list" for name in STREAMING_CN_BASENAMES}
+STREAMING_CN_FILES = {
+    config.vendor: {
+        f"{basename}{config.extension}"
+        for basename in STREAMING_CN_BASENAMES
+    }
+    for config in VENDOR_CONFIGS
+}
+CLASH_STREAMING_CN_FILES = STREAMING_CN_FILES["Clash"]
+SURGE_STREAMING_CN_FILES = STREAMING_CN_FILES["Surge"]
 
-STREAMING_COMBINE_TASKS = (
+STREAMING_COMBINE_TASKS = tuple(
     StreamingCombineTask(
-        vendor="Clash",
-        extension=".yaml",
-        cn_file_set=CLASH_STREAMING_CN_FILES,
-        out_cn_name="StreamingCN.yaml",
-        out_all_name="Streaming.yaml",
-        is_clash_yaml=True,
-    ),
-    StreamingCombineTask(
-        vendor="Surge",
-        extension=".list",
-        cn_file_set=SURGE_STREAMING_CN_FILES,
-        out_cn_name="StreamingCN.list",
-        out_all_name="Streaming.list",
-        is_clash_yaml=False,
-    ),
+        config.vendor,
+        config.extension,
+        STREAMING_CN_FILES[config.vendor],
+        f"StreamingCN{config.extension}",
+        f"Streaming{config.extension}",
+        config.is_clash_yaml,
+    )
+    for config in VENDOR_CONFIGS
 )
 
 
@@ -143,10 +150,7 @@ def _target_matches(vendor: str, target: str) -> bool:
 
 
 def download_url(url: str, target: Path) -> None:
-    """
-    下载单个文件到 target。
-    Python 证书链异常时回退到系统 curl，以适配本机 GitHub 访问环境。
-    """
+    """下载文件；Python 证书链异常时回退到系统 curl。"""
     target.parent.mkdir(parents=True, exist_ok=True)
     request = urllib.request.Request(url, headers={"User-Agent": "Rules-Sync-Combiner"})
 
@@ -312,15 +316,59 @@ def _download_direct_file(
         raise
 
 
+def _sync_direct_rules(
+    target: str,
+    download_file: DownloadFile,
+) -> bool:
+    """同步单文件任务，并按任务策略处理失败目标。"""
+    all_synced = True
+
+    task_groups = (
+        (ASN_SYNC_TASKS, KEEP_EXISTING),
+        (BLACKMATRIX7_TIKTOK_SYNC_TASKS, REMOVE_INCOMPLETE),
+    )
+    for tasks, keep_existing in task_groups:
+        for task in tasks:
+            if not _target_matches(task.vendor, target):
+                continue
+
+            destination = BASE_DIR / task.target
+            try:
+                if keep_existing:
+                    _replace_file(
+                        task.url,
+                        destination,
+                        task.label,
+                        download_file,
+                    )
+                else:
+                    _download_direct_file(
+                        task.url,
+                        destination,
+                        task.label,
+                        download_file,
+                    )
+                print(f"  ✅ {task.label}: 已同步 {task.target}")
+            except Exception as e:
+                all_synced = False
+                failure_action = (
+                    "继续使用本地文件"
+                    if keep_existing
+                    else "已删除不完整文件"
+                )
+                print(
+                    f"  ⚠️ {task.label}: 同步失败，"
+                    f"{failure_action}：{e}"
+                )
+
+    return all_synced
+
+
 def sync_remote_rules(
     target: str = "all",
     download_file: DownloadFile | None = None,
 ) -> bool:
-    """
-    依次同步 dler-io Provider、ASNChina 和 blackmatrix7 TikTok 文件。
-    Provider/ASN 同步失败时保留已有文件；blackmatrix7 同步失败时删除
-    不完整目标。任一同步失败均返回 False。
-    """
+    """同步 Provider、ASNChina 和 blackmatrix7 TikTok 规则。"""
     download_file = download_file or download_url
 
     print("── 🌐 同步远程规则 ──")
@@ -328,7 +376,7 @@ def sync_remote_rules(
     provider_tasks = tuple(
         task
         for task in PROVIDER_SYNC_TASKS
-        if _target_matches(task[0], target)
+        if _target_matches(task.vendor, target)
     )
 
     with tempfile.TemporaryDirectory(prefix="rules-provider-") as tmp:
@@ -338,11 +386,11 @@ def sync_remote_rules(
         if provider_tasks:
             try:
                 repository_root = _extract_github_archive(
-                    provider_tasks[0][1].archive_url,
+                    provider_tasks[0].source.archive_url,
                     workspace / "archive",
                 )
             except Exception as e:
-                vendors = ", ".join(task[0] for task in provider_tasks)
+                vendors = ", ".join(task.vendor for task in provider_tasks)
                 print(
                     f"  ⚠️ {vendors}: Provider 归档下载失败，"
                     f"本次保留本地文件：{e}"
@@ -354,21 +402,29 @@ def sync_remote_rules(
                 print()
                 return False
 
-        for index, (vendor, source, rel_target) in enumerate(provider_tasks):
-            target_dir = BASE_DIR / rel_target
-            downloaded_dir = workspace / f"{index}-{vendor.lower()}-Provider"
+        for index, task in enumerate(provider_tasks):
+            target_dir = BASE_DIR / task.target
+            downloaded_dir = (
+                workspace / f"{index}-{task.vendor.lower()}-Provider"
+            )
             try:
-                preserved_rules = _read_preserved_media_rules(target_dir, vendor)
+                preserved_rules = _read_preserved_media_rules(
+                    target_dir,
+                    task.vendor,
+                )
                 assert repository_root is not None
                 _copy_github_archive_tree(
-                    source,
+                    task.source,
                     repository_root,
                     downloaded_dir,
                 )
-                _ensure_non_empty_dir(downloaded_dir, f"{vendor} Provider")
+                _ensure_non_empty_dir(
+                    downloaded_dir,
+                    f"{task.vendor} Provider",
+                )
                 _restore_preserved_media_rules(downloaded_dir, preserved_rules)
                 _replace_directory(downloaded_dir, target_dir)
-                print(f"  ✅ {vendor}: 已同步 {rel_target}")
+                print(f"  ✅ {task.vendor}: 已同步 {task.target}")
                 if preserved_rules:
                     names = ", ".join(
                         f"Media/{name}" for name in sorted(preserved_rules)
@@ -377,7 +433,7 @@ def sync_remote_rules(
             except Exception as e:
                 all_synced = False
                 print(
-                    f"  ⚠️ {vendor}: Provider 同步失败，"
+                    f"  ⚠️ {task.vendor}: Provider 同步失败，"
                     f"继续使用本地文件：{e}"
                 )
 
@@ -389,87 +445,69 @@ def sync_remote_rules(
         print()
         return False
 
-    for label, url, rel_target, vendor in ASN_SYNC_TASKS:
-        if not _target_matches(vendor, target):
-            continue
-
-        try:
-            _replace_file(url, BASE_DIR / rel_target, label, download_file)
-            print(f"  ✅ {label}: 已同步 {rel_target}")
-        except Exception as e:
-            all_synced = False
-            print(f"  ⚠️ {label}: 同步失败，继续使用本地文件：{e}")
-
-    for label, url, rel_target, vendor in BLACKMATRIX7_TIKTOK_SYNC_TASKS:
-        if not _target_matches(vendor, target):
-            continue
-
-        try:
-            _download_direct_file(
-                url,
-                BASE_DIR / rel_target,
-                label,
-                download_file,
-            )
-            print(f"  ✅ {label}: 已同步 {rel_target}")
-        except Exception as e:
-            all_synced = False
-            print(f"  ⚠️ {label}: 同步失败，已删除不完整文件：{e}")
-
+    all_synced = _sync_direct_rules(
+        target,
+        download_file,
+    )
     print()
     return all_synced
 
 
-def find_media_folder(vendor: str) -> Path:
-    """
-    查找 Clash/Surge 的 Provider 目录用于“合并”：
-    优先使用 Rules/{vendor}/Provider/Media
-    找不到则使用 Rules/{vendor}/Provider
-    """
-    candidates = [
-        BASE_DIR / vendor / "Provider" / "Media",
-        BASE_DIR / vendor / "Provider",
-    ]
-    for path in candidates:
-        if path.is_dir():
-            return path
-
-    raise FileNotFoundError(
-        f"[{vendor}] 找不到 Provider 目录：\n"
-        f"  需存在 Rules/{vendor}/Provider/Media 或 Rules/{vendor}/Provider"
-    )
-
-
-def ensure_media_dir(vendor: str) -> Path:
-    """
-    确保存在 Rules/{vendor}/Provider/Media 目录：
-    - 若已存在 Media：直接返回
-    - 若只有 Provider：自动创建 Media
-    - 若连 Provider 都没有：抛出异常
-    """
+def _media_folder(vendor: str, create: bool = False) -> Path:
+    """返回媒体目录；合并时可回退 Provider，整理时可创建 Media。"""
     provider = BASE_DIR / vendor / "Provider"
     media = provider / "Media"
 
     if media.is_dir():
         return media
     if provider.is_dir():
-        media.mkdir(exist_ok=True)
-        return media
+        if create:
+            media.mkdir()
+            return media
+        return provider
 
-    raise FileNotFoundError(
-        f"[{vendor}] 找不到 Provider 目录，无法创建 Media：\n"
+    detail = (
         f"  需存在 Rules/{vendor}/Provider"
+        if create
+        else f"  需存在 Rules/{vendor}/Provider/Media 或 Rules/{vendor}/Provider"
     )
+    action = "，无法创建 Media" if create else ""
+    raise FileNotFoundError(f"[{vendor}] 找不到 Provider 目录{action}：\n{detail}")
 
 
-def _append_blank_line(block: list[str]) -> list[str]:
-    """确保每个文件块末尾至少有一个空行。"""
+def find_media_folder(vendor: str) -> Path:
+    return _media_folder(vendor)
+
+
+def ensure_media_dir(vendor: str) -> Path:
+    return _media_folder(vendor, create=True)
+
+
+def _read_rule_block(path: Path, is_clash_yaml: bool) -> str:
+    """读取单个规则文件，并规范化为可直接合并的文本块。"""
+    text = path.read_text(encoding="utf-8")
+    if not text:
+        return ""
+
+    lines = text.splitlines(keepends=True)
+    if is_clash_yaml and lines[0].lstrip().lower().startswith("payload"):
+        lines = lines[1:]
+
+    block = "".join(lines)
     if not block:
-        return block
-    if not block[-1].endswith("\n"):
-        block[-1] = block[-1] + "\n"
-    block.append("\n")
-    return block
+        return ""
+    return block + ("" if block.endswith("\n") else "\n") + "\n"
+
+
+def _write_streaming_file(
+    target: Path,
+    sources: list[Path],
+    is_clash_yaml: bool,
+) -> None:
+    """将一组规则文件按既定顺序写入单个合并文件。"""
+    header = "payload:\n" if is_clash_yaml else ""
+    blocks = (_read_rule_block(source, is_clash_yaml) for source in sources)
+    target.write_text(header + "".join(blocks), encoding="utf-8")
 
 
 def _tiktok_rule_from_line(line: str, is_clash_yaml: bool) -> str | None:
@@ -536,11 +574,7 @@ def _merge_tiktok_rule_files(
     blackmatrix7_target: Path,
     is_clash_yaml: bool,
 ) -> None:
-    """
-    将 dler-io 源文件与 Media 中的 blackmatrix7 文件合并到目标文件。
-
-    两份文件均成功读取、解析且目标写入成功后，才删除 dler-io 源文件。
-    """
+    """合并两份 TikTok 文件，成功写入后才删除 dler-io 源文件。"""
     dler_text = dler_source.read_text(encoding="utf-8")
     blackmatrix7_text = blackmatrix7_target.read_text(encoding="utf-8")
     merged_text = _merge_tiktok_text(
@@ -555,17 +589,7 @@ def _merge_tiktok_rule_files(
 
 
 def organize_provider_media_rules() -> None:
-    """
-    在“合并媒体文件之前”整理 Provider：
-      - Douyin.yaml / Douyin.list → 移入对应 Provider/Media
-      - TikTok 目标不存在时直接移入
-      - TikTok 目标存在时，视为已下载的 blackmatrix7 规则，与 dler-io
-        源文件合并去重后写回目标；合并成功后才删除 dler-io 源文件
-    源文件优先从这些位置查找：
-      1) Rules 根目录
-      2) Rules/{vendor}/Provider
-      3) Rules/{vendor}
-    """
+    """按根目录、Provider、vendor 的优先级整理 Douyin/TikTok。"""
     print("── 🔄 Provider 整理：移动 Douyin / TikTok 规则 ──")
 
     moved_any = False
@@ -626,15 +650,7 @@ def combine_streaming(
     out_all_name: str,
     is_clash_yaml: bool = False,
 ) -> None:
-    """
-    通用合并函数：
-    - vendor: "Clash" 或 "Surge"
-    - extension: ".yaml" 或 ".list"
-    - cn_file_set: 需要归入 StreamingCN 的文件名集合
-    - out_cn_name: 输出的国内流媒体文件名
-    - out_all_name: 输出的国际/其他流媒体文件名
-    - is_clash_yaml: 是否为 Clash YAML（需要写 payload: 头，并去除子文件第一行 payload）
-    """
+    """将 vendor 的媒体规则分类合并为 StreamingCN 和 Streaming。"""
     media_folder = find_media_folder(vendor)
     rel_media_folder = media_folder.relative_to(BASE_DIR)
 
@@ -651,10 +667,11 @@ def combine_streaming(
         print(f"── 🧩 {vendor}: 未找到 *{extension} 规则文件，跳过 ──")
         return
 
-    cn_files = {f.name for f in files} & cn_file_set
+    cn_files = [file for file in files if file.name in cn_file_set]
+    other_files = [file for file in files if file.name not in cn_file_set]
     cn_count = len(cn_files)
     total = len(files)
-    other_count = total - cn_count
+    other_count = len(other_files)
 
     out_cn_path = media_folder / out_cn_name
     out_all_path = media_folder / out_all_name
@@ -674,37 +691,16 @@ def combine_streaming(
         temp_cn_path = temp_dir / out_cn_name
         temp_all_path = temp_dir / out_all_name
 
-        with (
-            temp_cn_path.open("w", encoding="utf-8") as cn_out,
-            temp_all_path.open("w", encoding="utf-8") as all_out,
-        ):
-            # Clash 的 YAML 输出文件写入 payload: 头
-            if is_clash_yaml:
-                cn_out.write("payload:\n")
-                all_out.write("payload:\n")
-
-            for f in files:
-                text = f.read_text(encoding="utf-8")
-                if not text:
-                    continue
-
-                lines = text.splitlines(keepends=True)
-
-                # Clash YAML：如果首行是 payload 或 payload:，就去掉
-                if is_clash_yaml and lines:
-                    first = lines[0].lstrip().lower()
-                    if first.startswith("payload"):
-                        lines = lines[1:]
-
-                if not lines:
-                    continue
-
-                lines = _append_blank_line(lines)
-
-                if f.name in cn_files:
-                    cn_out.writelines(lines)
-                else:
-                    all_out.writelines(lines)
+        _write_streaming_file(
+            temp_cn_path,
+            cn_files,
+            is_clash_yaml,
+        )
+        _write_streaming_file(
+            temp_all_path,
+            other_files,
+            is_clash_yaml,
+        )
 
         temp_cn_path.replace(out_cn_path)
         temp_all_path.replace(out_all_path)
@@ -754,14 +750,7 @@ def main() -> None:
             continue
 
         try:
-            combine_streaming(
-                vendor=task.vendor,
-                extension=task.extension,
-                cn_file_set=task.cn_file_set,
-                out_cn_name=task.out_cn_name,
-                out_all_name=task.out_all_name,
-                is_clash_yaml=task.is_clash_yaml,
-            )
+            combine_streaming(**task._asdict())
         except FileNotFoundError as e:
             had_error = True
             print(f"❌ {task.vendor} 合并失败: {e}\n")
