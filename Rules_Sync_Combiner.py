@@ -71,6 +71,23 @@ ASN_SYNC_TASKS = (
     ),
 )
 
+BLACKMATRIX7_TIKTOK_SYNC_TASKS = (
+    (
+        "Surge blackmatrix7 TikTok.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/"
+        "master/rule/Surge/TikTok/TikTok.list",
+        Path("Surge") / "Provider" / "Media" / "TikTok.list",
+        "Surge",
+    ),
+    (
+        "Clash blackmatrix7 TikTok.yaml",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/"
+        "master/rule/Clash/TikTok/TikTok.yaml",
+        Path("Clash") / "Provider" / "Media" / "TikTok.yaml",
+        "Clash",
+    ),
+)
+
 MEDIA_RULE_MOVE_TASKS = (
     ("Clash", "Douyin.yaml"),
     ("Clash", "TikTok.yaml"),
@@ -279,13 +296,30 @@ def _replace_file(
         staging.unlink(missing_ok=True)
 
 
+def _download_direct_file(
+    source_url: str,
+    target: Path,
+    label: str,
+    download_file: DownloadFile,
+) -> None:
+    """直接下载到最终路径；失败时删除空文件或不完整文件。"""
+    target.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        download_file(source_url, target)
+        _ensure_non_empty_file(target, label)
+    except Exception:
+        target.unlink(missing_ok=True)
+        raise
+
+
 def sync_remote_rules(
     target: str = "all",
     download_file: DownloadFile | None = None,
 ) -> bool:
     """
-    同步远程 Provider 和 ASNChina 文件。
-    任何同步失败都保留本地已有文件，并返回 False。
+    依次同步 dler-io Provider、ASNChina 和 blackmatrix7 TikTok 文件。
+    Provider/ASN 同步失败时保留已有文件；blackmatrix7 同步失败时删除
+    不完整目标。任一同步失败均返回 False。
     """
     download_file = download_file or download_url
 
@@ -313,7 +347,10 @@ def sync_remote_rules(
                     f"  ⚠️ {vendors}: Provider 归档下载失败，"
                     f"本次保留本地文件：{e}"
                 )
-                print("     ↳ 已跳过 ASN 更新，重新运行脚本即可重试。")
+                print(
+                    "     ↳ 已跳过 ASN 与 blackmatrix7 TikTok 更新，"
+                    "重新运行脚本即可重试。"
+                )
                 print()
                 return False
 
@@ -345,7 +382,10 @@ def sync_remote_rules(
                 )
 
     if not all_synced:
-        print("     ↳ Provider 部分失败，本次跳过 ASN 更新。")
+        print(
+            "     ↳ Provider 部分失败，本次跳过 ASN 与 "
+            "blackmatrix7 TikTok 更新。"
+        )
         print()
         return False
 
@@ -359,6 +399,22 @@ def sync_remote_rules(
         except Exception as e:
             all_synced = False
             print(f"  ⚠️ {label}: 同步失败，继续使用本地文件：{e}")
+
+    for label, url, rel_target, vendor in BLACKMATRIX7_TIKTOK_SYNC_TASKS:
+        if not _target_matches(vendor, target):
+            continue
+
+        try:
+            _download_direct_file(
+                url,
+                BASE_DIR / rel_target,
+                label,
+                download_file,
+            )
+            print(f"  ✅ {label}: 已同步 {rel_target}")
+        except Exception as e:
+            all_synced = False
+            print(f"  ⚠️ {label}: 同步失败，已删除不完整文件：{e}")
 
     print()
     return all_synced
@@ -416,12 +472,95 @@ def _append_blank_line(block: list[str]) -> list[str]:
     return block
 
 
+def _tiktok_rule_from_line(line: str, is_clash_yaml: bool) -> str | None:
+    """提取用于去重的 TikTok 规则；忽略空行、注释和 Clash payload 头。"""
+    stripped = line.strip()
+    if not stripped or stripped.startswith("#"):
+        return None
+    if is_clash_yaml and stripped.rstrip(":").lower() == "payload":
+        return None
+    if is_clash_yaml and stripped.startswith("-"):
+        stripped = stripped[1:].lstrip()
+    return stripped or None
+
+
+def _merge_tiktok_text(
+    dler_text: str,
+    blackmatrix7_text: str,
+    is_clash_yaml: bool,
+) -> str:
+    """
+    合并两份 TikTok 规则。
+
+    dler-io 的规则与注释保持在前；blackmatrix7 只追加未出现过的有效规则，
+    丢弃其注释、空行以及 Clash payload 头。
+    """
+    output_lines = ["payload:"] if is_clash_yaml else []
+    seen_rules: set[str] = set()
+
+    for line in dler_text.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("#"):
+            output_lines.append(line.rstrip())
+            continue
+
+        rule = _tiktok_rule_from_line(line, is_clash_yaml)
+        if rule is None or rule in seen_rules:
+            continue
+        seen_rules.add(rule)
+        output_lines.append(f"  - {rule}" if is_clash_yaml else rule)
+
+    blackmatrix7_rule_count = 0
+    for line in blackmatrix7_text.splitlines():
+        rule = _tiktok_rule_from_line(line, is_clash_yaml)
+        if rule is None:
+            continue
+        blackmatrix7_rule_count += 1
+        if rule in seen_rules:
+            continue
+        seen_rules.add(rule)
+        output_lines.append(f"  - {rule}" if is_clash_yaml else rule)
+
+    if blackmatrix7_rule_count == 0:
+        raise RuntimeError("blackmatrix7 TikTok 文件中没有有效规则")
+    if not seen_rules:
+        raise RuntimeError("TikTok 合并结果中没有有效规则")
+
+    return "\n".join(output_lines) + "\n"
+
+
+def _merge_tiktok_rule_files(
+    dler_source: Path,
+    blackmatrix7_target: Path,
+    is_clash_yaml: bool,
+) -> None:
+    """
+    将 dler-io 源文件与 Media 中的 blackmatrix7 文件合并到目标文件。
+
+    两份文件均成功读取、解析且目标写入成功后，才删除 dler-io 源文件。
+    """
+    dler_text = dler_source.read_text(encoding="utf-8")
+    blackmatrix7_text = blackmatrix7_target.read_text(encoding="utf-8")
+    merged_text = _merge_tiktok_text(
+        dler_text,
+        blackmatrix7_text,
+        is_clash_yaml,
+    )
+    written = blackmatrix7_target.write_text(merged_text, encoding="utf-8")
+    if written != len(merged_text):
+        raise OSError(f"TikTok 合并结果未完整写入: {blackmatrix7_target}")
+    dler_source.unlink()
+
+
 def organize_provider_media_rules() -> None:
     """
     在“合并媒体文件之前”整理 Provider：
-      - Douyin.yaml / TikTok.yaml  → 移入 Clash/Provider/Media
-      - Douyin.list / TikTok.list  → 移入 Surge/Provider/Media
-    若目标 Media 目录已存在同名文件，则覆盖。
+      - Douyin.yaml / Douyin.list → 移入对应 Provider/Media
+      - TikTok 目标不存在时直接移入
+      - TikTok 目标存在时，视为已下载的 blackmatrix7 规则，与 dler-io
+        源文件合并去重后写回目标；合并成功后才删除 dler-io 源文件
     源文件优先从这些位置查找：
       1) Rules 根目录
       2) Rules/{vendor}/Provider
@@ -453,10 +592,18 @@ def organize_provider_media_rules() -> None:
             continue
 
         dst = media_dir / filename
-        action = "覆盖" if dst.exists() else "移动"
-
-        dst.write_bytes(src.read_bytes())
-        src.unlink(missing_ok=True)
+        should_merge_tiktok = filename.startswith("TikTok.") and dst.is_file()
+        if should_merge_tiktok:
+            _merge_tiktok_rule_files(
+                src,
+                dst,
+                is_clash_yaml=filename.endswith(".yaml"),
+            )
+            action = "合并"
+        else:
+            action = "覆盖" if dst.exists() else "移动"
+            dst.write_bytes(src.read_bytes())
+            src.unlink(missing_ok=True)
 
         print(
             f"  • {vendor}: {action} {src.relative_to(BASE_DIR)} "
@@ -597,7 +744,7 @@ def main() -> None:
         print("❌ 远程同步未完成，请稍后重新运行脚本。")
         return
 
-    # 1. 先把 Douyin / TikTok 移入对应 Media
+    # 1. 整理 Douyin，并合并 dler-io 与 blackmatrix7 TikTok
     organize_provider_media_rules()
 
     had_error = False
