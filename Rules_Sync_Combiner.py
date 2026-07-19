@@ -2,19 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+import os
 import shutil
 import subprocess
 import tempfile
 import urllib.request
 import zipfile
 from pathlib import Path
-from typing import Callable, NamedTuple, Set
+from typing import Callable, NamedTuple
 
 # 脚本所在目录 = Rules 根目录
 BASE_DIR = Path(__file__).resolve().parent
 
 DownloadFile = Callable[[str, Path], None]
-DownloadTree = Callable[["GitHubArchiveTree", Path], None]
 
 
 class GitHubArchiveTree(NamedTuple):
@@ -22,11 +22,24 @@ class GitHubArchiveTree(NamedTuple):
     subdir: Path
 
 
+class StreamingCombineTask(NamedTuple):
+    vendor: str
+    extension: str
+    cn_file_set: set[str]
+    out_cn_name: str
+    out_all_name: str
+    is_clash_yaml: bool
+
+
+DLER_RULES_ARCHIVE_URL = (
+    "https://github.com/dler-io/Rules/archive/refs/heads/main.zip"
+)
+
 PROVIDER_SYNC_TASKS = (
     (
         "Surge",
         GitHubArchiveTree(
-            "https://github.com/dler-io/Rules/archive/refs/heads/main.zip",
+            DLER_RULES_ARCHIVE_URL,
             Path("Surge") / "Surge 3" / "Provider",
         ),
         Path("Surge") / "Provider",
@@ -34,7 +47,7 @@ PROVIDER_SYNC_TASKS = (
     (
         "Clash",
         GitHubArchiveTree(
-            "https://github.com/dler-io/Rules/archive/refs/heads/main.zip",
+            DLER_RULES_ARCHIVE_URL,
             Path("Clash") / "Provider",
         ),
         Path("Clash") / "Provider",
@@ -70,35 +83,42 @@ PRESERVED_MEDIA_RULES = {
     "Surge": ("Emby.list",),
 }
 
-# Clash 侧要归入 StreamingCN.yaml 的文件
-CLASH_STREAMING_CN_FILES: Set[str] = {
-    "Bilibili.yaml",
-    "Douyin.yaml",
-    "Emby.yaml",
-    "IQ.yaml",
-    "IQIYI.yaml",
-    "Letv.yaml",
-    "MOO.yaml",
-    "Netease Music.yaml",
-    "Tencent Video.yaml",
-    "WeTV.yaml",
-    "Youku.yaml",
+# Clash / Surge 归入 StreamingCN 的文件共用同一份基础名单
+STREAMING_CN_BASENAMES: set[str] = {
+    "Bilibili",
+    "Douyin",
+    "Emby",
+    "IQ",
+    "IQIYI",
+    "Letv",
+    "MOO",
+    "Netease Music",
+    "Tencent Video",
+    "WeTV",
+    "Youku",
 }
 
-# Surge 侧要归入 StreamingCN.list 的文件
-SURGE_STREAMING_CN_FILES: Set[str] = {
-    "Bilibili.list",
-    "Douyin.list",
-    "Emby.list",
-    "IQ.list",
-    "IQIYI.list",
-    "Letv.list",
-    "MOO.list",
-    "Netease Music.list",
-    "Tencent Video.list",
-    "WeTV.list",
-    "Youku.list",
-}
+CLASH_STREAMING_CN_FILES = {f"{name}.yaml" for name in STREAMING_CN_BASENAMES}
+SURGE_STREAMING_CN_FILES = {f"{name}.list" for name in STREAMING_CN_BASENAMES}
+
+STREAMING_COMBINE_TASKS = (
+    StreamingCombineTask(
+        vendor="Clash",
+        extension=".yaml",
+        cn_file_set=CLASH_STREAMING_CN_FILES,
+        out_cn_name="StreamingCN.yaml",
+        out_all_name="Streaming.yaml",
+        is_clash_yaml=True,
+    ),
+    StreamingCombineTask(
+        vendor="Surge",
+        extension=".list",
+        cn_file_set=SURGE_STREAMING_CN_FILES,
+        out_cn_name="StreamingCN.list",
+        out_all_name="Streaming.list",
+        is_clash_yaml=False,
+    ),
+)
 
 
 def _target_matches(vendor: str, target: str) -> bool:
@@ -114,8 +134,10 @@ def download_url(url: str, target: Path) -> None:
     request = urllib.request.Request(url, headers={"User-Agent": "Rules-Sync-Combiner"})
 
     try:
-        with urllib.request.urlopen(request, timeout=60) as response, \
-                target.open("wb") as output:
+        with (
+            urllib.request.urlopen(request, timeout=60) as response,
+            target.open("wb") as output,
+        ):
             shutil.copyfileobj(response, output)
         return
     except Exception as python_error:
@@ -151,29 +173,33 @@ def download_url(url: str, target: Path) -> None:
             raise RuntimeError(f"下载失败: {url}\n{detail}") from python_error
 
 
-def download_github_archive_tree(source: GitHubArchiveTree, target: Path) -> None:
-    """下载 GitHub 分支 zip，并抽取其中一个目录到 target。"""
-    if target.exists():
-        shutil.rmtree(target)
+def _extract_github_archive(archive_url: str, workspace: Path) -> Path:
+    """下载并解压 GitHub 分支归档，返回仓库根目录。"""
+    workspace.mkdir(parents=True, exist_ok=False)
+    archive = workspace / "source.zip"
+    extract_dir = workspace / "extract"
 
-    with tempfile.TemporaryDirectory(prefix="rules-archive-") as tmp:
-        tmp_dir = Path(tmp)
-        archive = tmp_dir / "source.zip"
-        extract_dir = tmp_dir / "extract"
+    download_url(archive_url, archive)
+    with zipfile.ZipFile(archive) as zip_file:
+        zip_file.extractall(extract_dir)
 
-        download_url(source.archive_url, archive)
-        with zipfile.ZipFile(archive) as zip_file:
-            zip_file.extractall(extract_dir)
+    roots = [path for path in extract_dir.iterdir() if path.is_dir()]
+    if not roots:
+        raise RuntimeError("GitHub 压缩包中没有仓库目录")
+    return roots[0]
 
-        roots = [path for path in extract_dir.iterdir() if path.is_dir()]
-        if not roots:
-            raise RuntimeError("GitHub 压缩包中没有仓库目录")
 
-        source_dir = roots[0] / source.subdir
-        if not source_dir.is_dir():
-            raise RuntimeError(f"GitHub 压缩包中缺少目录: {source.subdir}")
+def _copy_github_archive_tree(
+    source: GitHubArchiveTree,
+    repository_root: Path,
+    target: Path,
+) -> None:
+    """从已解压的仓库中拷贝指定子目录。"""
+    source_dir = repository_root / source.subdir
+    if not source_dir.is_dir():
+        raise RuntimeError(f"GitHub 压缩包中缺少目录: {source.subdir}")
 
-        shutil.copytree(source_dir, target)
+    shutil.copytree(source_dir, target)
 
 
 def _ensure_non_empty_file(path: Path, label: str) -> None:
@@ -188,24 +214,24 @@ def _ensure_non_empty_dir(path: Path, label: str) -> None:
 
 def _replace_directory(source: Path, target: Path) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix=f".{target.name}.sync-",
+        dir=target.parent,
+    ) as tmp:
+        workspace = Path(tmp)
+        staging = workspace / "new"
+        previous = workspace / "old"
+        shutil.copytree(source, staging)
 
-    staging = target.parent / f".{target.name}.sync-new"
-    previous = target.parent / f".{target.name}.sync-old"
-    shutil.rmtree(staging, ignore_errors=True)
-    shutil.rmtree(previous, ignore_errors=True)
-    shutil.copytree(source, staging)
-
-    try:
-        if target.exists():
+        had_target = target.exists() or target.is_symlink()
+        if had_target:
             target.rename(previous)
-        staging.rename(target)
-    except Exception:
-        if not target.exists() and previous.exists():
-            previous.rename(target)
-        raise
-    finally:
-        shutil.rmtree(staging, ignore_errors=True)
-        shutil.rmtree(previous, ignore_errors=True)
+        try:
+            staging.rename(target)
+        except Exception:
+            if had_target and not (target.exists() or target.is_symlink()):
+                previous.rename(target)
+            raise
 
 
 def _read_preserved_media_rules(provider_dir: Path, vendor: str) -> dict[str, bytes]:
@@ -231,11 +257,19 @@ def _restore_preserved_media_rules(provider_dir: Path, preserved: dict[str, byte
         (media_dir / filename).write_bytes(content)
 
 
-def _replace_file(source_url: str, target: Path, label: str,
-                  download_file: DownloadFile) -> None:
+def _replace_file(
+    source_url: str,
+    target: Path,
+    label: str,
+    download_file: DownloadFile,
+) -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
-    staging = target.parent / f".{target.name}.sync-tmp"
-    staging.unlink(missing_ok=True)
+    descriptor, staging_name = tempfile.mkstemp(
+        prefix=f".{target.name}.sync-",
+        dir=target.parent,
+    )
+    os.close(descriptor)
+    staging = Path(staging_name)
 
     try:
         download_file(source_url, staging)
@@ -248,38 +282,72 @@ def _replace_file(source_url: str, target: Path, label: str,
 def sync_remote_rules(
     target: str = "all",
     download_file: DownloadFile | None = None,
-    download_tree: DownloadTree | None = None,
 ) -> bool:
     """
     同步远程 Provider 和 ASNChina 文件。
-    任何下载失败都只打印警告，并继续使用本地已有文件。
+    任何同步失败都保留本地已有文件，并返回 False。
     """
     download_file = download_file or download_url
-    download_tree = download_tree or download_github_archive_tree
 
     print("── 🌐 同步远程规则 ──")
     all_synced = True
+    provider_tasks = tuple(
+        task
+        for task in PROVIDER_SYNC_TASKS
+        if _target_matches(task[0], target)
+    )
 
-    for vendor, source, rel_target in PROVIDER_SYNC_TASKS:
-        if not _target_matches(vendor, target):
-            continue
+    with tempfile.TemporaryDirectory(prefix="rules-provider-") as tmp:
+        workspace = Path(tmp)
+        repository_root: Path | None = None
 
-        target_dir = BASE_DIR / rel_target
-        try:
-            preserved_rules = _read_preserved_media_rules(target_dir, vendor)
-            with tempfile.TemporaryDirectory(prefix=f"{vendor.lower()}-provider-") as tmp:
-                downloaded_dir = Path(tmp) / "Provider"
-                download_tree(source, downloaded_dir)
+        if provider_tasks:
+            try:
+                repository_root = _extract_github_archive(
+                    provider_tasks[0][1].archive_url,
+                    workspace / "archive",
+                )
+            except Exception as e:
+                vendors = ", ".join(task[0] for task in provider_tasks)
+                print(
+                    f"  ⚠️ {vendors}: Provider 归档下载失败，"
+                    f"本次保留本地文件：{e}"
+                )
+                print("     ↳ 已跳过 ASN 更新，重新运行脚本即可重试。")
+                print()
+                return False
+
+        for index, (vendor, source, rel_target) in enumerate(provider_tasks):
+            target_dir = BASE_DIR / rel_target
+            downloaded_dir = workspace / f"{index}-{vendor.lower()}-Provider"
+            try:
+                preserved_rules = _read_preserved_media_rules(target_dir, vendor)
+                assert repository_root is not None
+                _copy_github_archive_tree(
+                    source,
+                    repository_root,
+                    downloaded_dir,
+                )
                 _ensure_non_empty_dir(downloaded_dir, f"{vendor} Provider")
+                _restore_preserved_media_rules(downloaded_dir, preserved_rules)
                 _replace_directory(downloaded_dir, target_dir)
-                _restore_preserved_media_rules(target_dir, preserved_rules)
-            print(f"  ✅ {vendor}: 已同步 {rel_target}")
-            if preserved_rules:
-                names = ", ".join(f"Media/{name}" for name in sorted(preserved_rules))
-                print(f"     ↳ 已保留本地规则: {names}")
-        except Exception as e:
-            all_synced = False
-            print(f"  ⚠️ {vendor}: Provider 同步失败，继续使用本地文件：{e}")
+                print(f"  ✅ {vendor}: 已同步 {rel_target}")
+                if preserved_rules:
+                    names = ", ".join(
+                        f"Media/{name}" for name in sorted(preserved_rules)
+                    )
+                    print(f"     ↳ 已保留本地规则: {names}")
+            except Exception as e:
+                all_synced = False
+                print(
+                    f"  ⚠️ {vendor}: Provider 同步失败，"
+                    f"继续使用本地文件：{e}"
+                )
+
+    if not all_synced:
+        print("     ↳ Provider 部分失败，本次跳过 ASN 更新。")
+        print()
+        return False
 
     for label, url, rel_target, vendor in ASN_SYNC_TASKS:
         if not _target_matches(vendor, target):
@@ -292,7 +360,7 @@ def sync_remote_rules(
             all_synced = False
             print(f"  ⚠️ {label}: 同步失败，继续使用本地文件：{e}")
 
-    print("")
+    print()
     return all_synced
 
 
@@ -370,11 +438,10 @@ def organize_provider_media_rules() -> None:
             BASE_DIR / vendor / filename,
         ]
 
-        src: Path | None = None
-        for candidate in possible_sources:
-            if candidate.is_file():
-                src = candidate
-                break
+        src = next(
+            (candidate for candidate in possible_sources if candidate.is_file()),
+            None,
+        )
 
         if src is None:
             continue
@@ -401,13 +468,13 @@ def organize_provider_media_rules() -> None:
         print("  • 无 Douyin/TikTok 更新，跳过。")
     else:
         print("  ✅ Provider 整理完成。")
-    print("")
+    print()
 
 
 def combine_streaming(
     vendor: str,
     extension: str,
-    cn_file_set: Set[str],
+    cn_file_set: set[str],
     out_cn_name: str,
     out_all_name: str,
     is_clash_yaml: bool = False,
@@ -437,7 +504,7 @@ def combine_streaming(
         print(f"── 🧩 {vendor}: 未找到 *{extension} 规则文件，跳过 ──")
         return
 
-    cn_files = sorted({f.name for f in files if f.name in cn_file_set})
+    cn_files = {f.name for f in files} & cn_file_set
     cn_count = len(cn_files)
     total = len(files)
     other_count = total - cn_count
@@ -452,36 +519,48 @@ def combine_streaming(
         f"其它: {other_count} 个 → {out_all_name}"
     )
 
-    with out_cn_path.open("w", encoding="utf-8") as cn_out, \
-            out_all_path.open("w", encoding="utf-8") as all_out:
+    with tempfile.TemporaryDirectory(
+        prefix=f".{vendor.lower()}-combine-",
+        dir=media_folder,
+    ) as tmp:
+        temp_dir = Path(tmp)
+        temp_cn_path = temp_dir / out_cn_name
+        temp_all_path = temp_dir / out_all_name
 
-        # Clash 的 YAML 输出文件写入 payload: 头
-        if is_clash_yaml:
-            cn_out.write("payload:\n")
-            all_out.write("payload:\n")
+        with (
+            temp_cn_path.open("w", encoding="utf-8") as cn_out,
+            temp_all_path.open("w", encoding="utf-8") as all_out,
+        ):
+            # Clash 的 YAML 输出文件写入 payload: 头
+            if is_clash_yaml:
+                cn_out.write("payload:\n")
+                all_out.write("payload:\n")
 
-        for f in files:
-            text = f.read_text(encoding="utf-8")
-            if not text:
-                continue
+            for f in files:
+                text = f.read_text(encoding="utf-8")
+                if not text:
+                    continue
 
-            lines = text.splitlines(keepends=True)
+                lines = text.splitlines(keepends=True)
 
-            # Clash YAML：如果首行是 payload 或 payload:，就去掉
-            if is_clash_yaml and len(lines) > 0:
-                first = lines[0].lstrip().lower()
-                if first.startswith("payload"):
-                    lines = lines[1:]
+                # Clash YAML：如果首行是 payload 或 payload:，就去掉
+                if is_clash_yaml and lines:
+                    first = lines[0].lstrip().lower()
+                    if first.startswith("payload"):
+                        lines = lines[1:]
 
-            if not lines:
-                continue
+                if not lines:
+                    continue
 
-            lines = _append_blank_line(lines)
+                lines = _append_blank_line(lines)
 
-            if f.name in cn_files:
-                cn_out.writelines(lines)
-            else:
-                all_out.writelines(lines)
+                if f.name in cn_files:
+                    cn_out.writelines(lines)
+                else:
+                    all_out.writelines(lines)
+
+        temp_cn_path.replace(out_cn_path)
+        temp_all_path.replace(out_all_path)
 
     print(
         "  ✅ 输出: "
@@ -514,41 +593,31 @@ def main() -> None:
 
     if args.no_sync:
         print("── 🌐 同步远程规则：已跳过（--no-sync）──\n")
-    else:
-        sync_remote_rules(target=args.target)
+    elif not sync_remote_rules(target=args.target):
+        print("❌ 远程同步未完成，请稍后重新运行脚本。")
+        return
 
     # 1. 先把 Douyin / TikTok 移入对应 Media
     organize_provider_media_rules()
 
     had_error = False
 
-    if args.target in ("all", "clash"):
-        try:
-            combine_streaming(
-                vendor="Clash",
-                extension=".yaml",
-                cn_file_set=CLASH_STREAMING_CN_FILES,
-                out_cn_name="StreamingCN.yaml",
-                out_all_name="Streaming.yaml",
-                is_clash_yaml=True,
-            )
-        except FileNotFoundError as e:
-            had_error = True
-            print(f"❌ Clash 合并失败: {e}\n")
+    for task in STREAMING_COMBINE_TASKS:
+        if not _target_matches(task.vendor, args.target):
+            continue
 
-    if args.target in ("all", "surge"):
         try:
             combine_streaming(
-                vendor="Surge",
-                extension=".list",
-                cn_file_set=SURGE_STREAMING_CN_FILES,
-                out_cn_name="StreamingCN.list",
-                out_all_name="Streaming.list",
-                is_clash_yaml=False,
+                vendor=task.vendor,
+                extension=task.extension,
+                cn_file_set=task.cn_file_set,
+                out_cn_name=task.out_cn_name,
+                out_all_name=task.out_all_name,
+                is_clash_yaml=task.is_clash_yaml,
             )
         except FileNotFoundError as e:
             had_error = True
-            print(f"❌ Surge 合并失败: {e}\n")
+            print(f"❌ {task.vendor} 合并失败: {e}\n")
 
     if not had_error:
         print("🎉 全部处理完成 ✅")
