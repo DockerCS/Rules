@@ -1,18 +1,18 @@
 # > Bilibili
-USER-AGENT,bili*
 DOMAIN-SUFFIX,acg.tv
 DOMAIN-SUFFIX,acgvideo.com
 DOMAIN-SUFFIX,b23.tv
+DOMAIN-SUFFIX,biliapi.com
+DOMAIN-SUFFIX,biliapi.net
 DOMAIN-SUFFIX,bilibili.com
 DOMAIN-SUFFIX,bilibili.tv
-DOMAIN-SUFFIX,biliapi.net
-DOMAIN-SUFFIX,biliapi.com
 DOMAIN-SUFFIX,bilivideo.com
 DOMAIN-SUFFIX,hdslb.com
 DOMAIN,upos-hz-mirrorakam.akamaized.net
-// Hong Kong,Macau,Taiwan
+USER-AGENT,bili*
+
+# > Bilibili Hong Kong, Macau and Taiwan
 USER-AGENT,bili-inter*
-DOMAIN,apiintl.biliapi.net
 
 # > Douyin
 DOMAIN-SUFFIX,amemv.com
@@ -26,11 +26,12 @@ DOMAIN-SUFFIX,toutiao.com
 DOMAIN-SUFFIX,cn2gias.uk
 DOMAIN-SUFFIX,zdz.plus
 
-DOMAIN-SUFFIX,iq.com
+# > IQ
 DOMAIN-SUFFIX,inter.iqiyi.com
-DOMAIN-SUFFIX,intl-rcd.iqiyi.com
-DOMAIN-SUFFIX,intl-subscription.iqiyi.com
+DOMAIN,intl-rcd.iqiyi.com
+DOMAIN,intl-subscription.iqiyi.com
 DOMAIN-SUFFIX,intl.iqiyi.com
+DOMAIN-SUFFIX,iq.com
 IP-CIDR,23.40.242.10/32,no-resolve
 IP-CIDR,23.59.252.0/24,no-resolve
 IP-CIDR,23.200.145.146/32,no-resolve
@@ -42,14 +43,11 @@ IP-CIDR,110.238.107.47/32,no-resolve
 IP-CIDR,118.26.32.162/32,no-resolve
 IP-CIDR,159.138.102.146/32,no-resolve
 IP-CIDR,184.51.102.0/24,no-resolve
-IP-CIDR,203.74.95.130/28,no-resolve
+IP-CIDR,203.74.95.128/28,no-resolve
 IP-CIDR,203.80.97.203/32,no-resolve
 IP-CIDR,210.71.227.202/32,no-resolve
 
-// > IQIYI
-USER-AGENT,*QIYI*
-USER-AGENT,iQiYi*
-DOMAIN-SUFFIX,iqiyi.com
+# > IQIYI
 DOMAIN-SUFFIX,71.am
 DOMAIN-SUFFIX,71.am.com
 DOMAIN-SUFFIX,71edge.com
@@ -84,6 +82,8 @@ DOMAIN-SUFFIX,qiyipic.com
 DOMAIN-SUFFIX,qy.com
 DOMAIN-SUFFIX,qy.net
 DOMAIN-SUFFIX,suike.cn
+USER-AGENT,*QIYI*
+USER-AGENT,iQiYi*
 
 # > letv
 DOMAIN-SUFFIX,api.mob.app.letv.com
@@ -93,20 +93,20 @@ USER-AGENT,MOO*
 USER-AGENT,TencentMidasConnect*
 
 # > Netease Music
-DOMAIN-SUFFIX,music.163.com
 DOMAIN-SUFFIX,music.126.net
+DOMAIN-SUFFIX,music.163.com
 
 # > Tencent Video
 DOMAIN-SUFFIX,v.smtcdns.com
 DOMAIN-SUFFIX,vv.video.qq.com
 
 # > WeTV
-USER-AGENT,WeTV*
 DOMAIN-SUFFIX,wetv.vip
 DOMAIN-SUFFIX,wetvinfo.com
+USER-AGENT,WeTV*
 
 # > Youku
 DOMAIN-SUFFIX,soku.com
-DOMAIN-SUFFIX,youku.com
 DOMAIN-SUFFIX,ykimg.com
+DOMAIN-SUFFIX,youku.com
 
