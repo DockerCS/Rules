@@ -327,7 +327,6 @@ DOMAIN-SUFFIX,muscdn.com
 DOMAIN-SUFFIX,musical.ly
 DOMAIN,p16-tiktokcdn-com.akamaized.net
 DOMAIN-SUFFIX,sgpstatp.com
-DOMAIN-SUFFIX,snssdk.com
 DOMAIN-SUFFIX,tik-tokapi.com
 DOMAIN-SUFFIX,tiktok.com
 DOMAIN-SUFFIX,tiktokcdn.com
@@ -345,6 +344,7 @@ DOMAIN-SUFFIX,capcutapi.us
 DOMAIN-SUFFIX,capcutstatic.com
 DOMAIN-SUFFIX,isnssdk.com
 DOMAIN-SUFFIX,marscode.com
+DOMAIN-SUFFIX,snssdk.com
 DOMAIN-SUFFIX,tiktokcdn-us.com
 DOMAIN-SUFFIX,tiktokd.net
 DOMAIN-SUFFIX,tiktokd.org
