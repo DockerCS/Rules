@@ -109,14 +109,9 @@ DOMAIN-SUFFIX,cursorapi.com
 DOMAIN-SUFFIX,cursorvm.com
 
 # > Cursor shared sign-in
-# Shared sign-in hosts from 2026-09-30; keep exact matches to avoid routing all of Grok
+# Shared sign-in uses X auth hosts; the xAI suffix rules below cover them
 # https://cursor.com/help/troubleshooting/sign-in-domains
 DOMAIN,accounts.spacex.ai
-DOMAIN,accounts.x.ai
-DOMAIN,auth.grok.com
-DOMAIN,auth.grokipedia.com
-DOMAIN,auth.grokusercontent.com
-DOMAIN,auth.x.ai
 
 # > DIA
 DOMAIN-SUFFIX,diabrowser.com
@@ -273,8 +268,10 @@ DOMAIN-SUFFIX,kiro.dev
 DOMAIN,q.eu-central-1.amazonaws.com
 DOMAIN,q.us-east-1.amazonaws.com
 
-# > Meta AI
+# > Meta AI / Muse
+# https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/
 DOMAIN-SUFFIX,meta.ai
+DOMAIN-SUFFIX,muse.ai
 
 # > Microsoft Copilot
 # Retained for macOS app availability; web/mobile support alone is insufficient
@@ -321,3 +318,11 @@ DOMAIN-SUFFIX,windsurf.com
 
 # > Zed
 DOMAIN-SUFFIX,zed.dev
+
+# > xAI / Grok
+# xAI runs sign-in for Grok and Cursor; wildcard domains per official guidance
+# https://cursor.com/help/troubleshooting/sign-in-domains
+DOMAIN-SUFFIX,grok.com
+DOMAIN-SUFFIX,grokipedia.com
+DOMAIN-SUFFIX,grokusercontent.com
+DOMAIN-SUFFIX,x.ai
